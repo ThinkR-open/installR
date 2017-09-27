@@ -40,7 +40,7 @@ exc <- names(packs[,'Package'])
                        "sandwich", "sas7bdat", "scales", "scatterplot3d", "SensoMineR", 
                        "splines", "sqldf", "stats", "stringr", "survival", "tcltk", 
                        "tcltk2", "tidyverse", "tools", "tseries", "utils", "XLConnect", 
-                       "XLConnectJars", "xtable", "xts", "zoo","shinydashboard",
+                       "XLConnectJars", "xtable", "xts", "zoo","shinydashboard","fcuk",
                        "rmdformats", "shinydashboard", "microbenchmark", "nycflights13", "reprex"
                        )))
   
@@ -78,6 +78,12 @@ cat("      Tout s'est bien passe pour ",elpa,"\n")
 }
 
 cat("\n\n\n ***FIN DU SCRIPT*** \n\n\n")
+
+cat("installations depuis github")
+
+devtools::install_github( "ThinkR-open/prenoms" )
+
+cat("    FIN - installations depuis github")
 
 
 packs <- installed.packages()
