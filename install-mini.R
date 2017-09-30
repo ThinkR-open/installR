@@ -33,7 +33,7 @@ exc <- names(packs[,'Package'])
                        "grid", "gtable", "haven", "hflights", "highr", "Hmisc", "htmltools", 
                        "jpeg", "knitr", "labeling", "lattice", "latticeExtra", "leaps", 
                        "markdown", "MASS", "methods", "mime", "moments", "munsell", 
-                       "ncdf", "nls2", "nnet", "nortest", "openxlsx", "packrat", "plyr","fcuk", 
+                        "nls2", "nnet", "nortest", "openxlsx", "packrat", "plyr","fcuk", 
                        "proto", "pvclust", "raster", "Rcmdr", "RcmdrMisc", "RcmdrPlugin.FactoMineR", 
                        "RColorBrewer", "Rcpp", "readr", "readxl", "ReporteRs", "ReporteRsjars", 
                        "reshape", "reshape2", "rJava", "rmarkdown", "roxygen2", "rtable", 
