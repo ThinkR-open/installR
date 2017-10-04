@@ -26,7 +26,7 @@ exc <- names(packs[,'Package'])
   # update.packages(ask=FALSE)
   ainstaller<-unique(sort(c("abind","arsenal", "abn", "bbmle", "bit64", "CADFtest","rmdformats","writexl", "car", "chron", 
                        "class", "cluster", "colorspace", "compiler", "data.table", "DBI", 
-                       "devEMF", "devtools", "dichromat", "digest", "doSNOW", "dplyr", 
+                       "devEMF", "devtools", "dichromat", "digest", "doSNOW", "dplyr","dygraphs", 
                        "e1071", "ellipse", "evaluate", "explor", "FactoMineR", "Factoshiny", "plotly",
                        "fifer", "forecast", "foreign", "formatR", "Formula", "fortunes", 
                        "ggplot2", "ggthemes", "gmm", "gplots", "graphics", "grDevices", 
