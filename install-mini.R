@@ -81,7 +81,8 @@ cat("\n\n\n ***FIN DU SCRIPT*** \n\n\n")
 
 cat("installations depuis github")
 
-devtools::install_github( "ThinkR-open/prenoms" )
+try(devtools::install_github( "ThinkR-open/prenoms" ))
+try(devtools::install_github("ThinkR-open/remedy"))
 
 cat("    FIN - installations depuis github")
 
