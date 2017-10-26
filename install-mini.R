@@ -42,7 +42,7 @@ exc <- names(packs[,'Package'])
                        "tcltk2", "tidyverse", "tools", "tseries", "utils", "XLConnect", 
                        "XLConnectJars", "xtable", "xts", "zoo","shinydashboard","fcuk",
                        "icarus", "proustr", "rvest", "httr", "R6", "tidytext", "tidystringdist",
-                       "topicmodels","broom", "h2o", "rpart", "randomForest",
+                       "topicmodels","broom", "h2o", "rpart", "randomForest", "gbm", 
                        "rmdformats", "shinydashboard", "microbenchmark", "nycflights13", "reprex"
                        )))
   
