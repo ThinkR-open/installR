@@ -88,7 +88,7 @@ cat("installations depuis github")
 
 try(devtools::install_github( "ThinkR-open/prenoms" ))
 try(devtools::install_github("ThinkR-open/remedy"))
-
+devtools::install_github("ThinkR-open/shopping")
 cat("    FIN - installations depuis github")
 
 
