@@ -38,12 +38,12 @@ exc <- names(packs[,'Package'])
                        "markdown", "MASS", "methods", "mime", "moments", "munsell", 
                         "nls2", "nnet", "nortest", "openxlsx", "packrat", "plyr","fcuk", 
                        "proto", "pvclust", "raster", "Rcmdr", "RcmdrMisc", "RcmdrPlugin.FactoMineR", 
-                       "RColorBrewer", "Rcpp", "readr", "readxl", "ReporteRs", "ReporteRsjars", 
+                       "RColorBrewer", "Rcpp", "readr", "readxl",  
                        "reshape", "reshape2", "rJava", "rmarkdown", "roxygen2", "rtable", 
                        "sandwich", "sas7bdat", "scales", "scatterplot3d", "SensoMineR", 
                        "splines", "sqldf", "stats", "stringr", "survival", "tcltk", 
                        "tcltk2", "tidyverse", "tools", "tseries", "utils", "XLConnect", 
-                       "XLConnectJars", "xtable", "xts", "zoo","shinydashboard","fcuk",
+                       "XLConnectJars", "xtable", "xts", "zoo","shinydashboard","fcuk","attempt",
                        "icarus", "proustr", "rvest", "httr", "R6", "tidytext", "tidystringdist",
                        "topicmodels","broom", "h2o", "rpart", "randomForest", "gbm","thinkr","rusk", 
                        "rmdformats", "shinydashboard", "microbenchmark", "nycflights13", "reprex"
@@ -88,7 +88,8 @@ cat("installations depuis github")
 
 try(devtools::install_github( "ThinkR-open/prenoms" ))
 try(devtools::install_github("ThinkR-open/remedy"))
-devtools::install_github("ThinkR-open/shopping")
+try(devtools::install_github("ThinkR-open/shopping"))
+try(devtools::install_github("Thinkr-open/shinytemplate"))
 cat("    FIN - installations depuis github")
 
 
@@ -111,6 +112,6 @@ try(mon_print(manque),silent = TRUE)
 if (NROW(manque)==0){cat("Parfait, il n'y a aucun package manquant\n\n\n")}
 try(silent=TRUE,rm(ainstaller,elpa,exc,packs,percent,mon_print,synth,manque,vrai_liste))
 
-cat("\n\n\ntentative de chargement de Reporters et XLconnect \n\n\n")
-try(require(ReporteRs))
+cat("\n\n\ntentative de chargement de  XLconnect \n\n\n")
+
 try(require(XLConnect))
