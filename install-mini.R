@@ -111,7 +111,3 @@ try(mon_print(manque),silent = TRUE)
 
 if (NROW(manque)==0){cat("Parfait, il n'y a aucun package manquant\n\n\n")}
 try(silent=TRUE,rm(ainstaller,elpa,exc,packs,percent,mon_print,synth,manque,vrai_liste))
-
-cat("\n\n\ntentative de chargement de  XLconnect \n\n\n")
-
-try(require(XLConnect))
