@@ -24,7 +24,7 @@ packs <- installed.packages()
 exc <- names(packs[,'Package'])
   local({r <- getOption("repos"); r["CRAN"] <- "http://cran.r-project.org/"; options(repos=r)})
   # update.packages(ask=FALSE)
-  ainstaller<-unique(sort(c("abind","arsenal", "abn", "bbmle", "bit64", "CADFtest","rmdformats","writexl",
+  ainstaller<-unique(sort(c("abind","arsenal", "abn","remotes", "bbmle", "bit64", "CADFtest","rmdformats","writexl",
                             "pryr","ggraph","togglr","shinyBS",
                             
                             "car", "chron", "usethis","reprex","rusk","gapminder","shinyWidgets",
@@ -86,10 +86,10 @@ cat("\n\n\n ***FIN DU SCRIPT*** \n\n\n")
 
 cat("installations depuis github")
 
-try(devtools::install_github( "ThinkR-open/prenoms" ))
-try(devtools::install_github("ThinkR-open/remedy"))
-try(devtools::install_github("ThinkR-open/shopping"))
-try(devtools::install_github("Thinkr-open/shinytemplate"))
+try(remotes::install_github( "ThinkR-open/prenoms" ))
+try(remotes::install_github("ThinkR-open/remedy"))
+try(remotes::install_github("ThinkR-open/shopping"))
+try(remotes::install_github("Thinkr-open/shinytemplate"))
 cat("    FIN - installations depuis github")
 
 
