@@ -39,6 +39,9 @@ exc <- names(packs[,'Package'])
                         "nls2", "nnet", "nortest", "openxlsx", "packrat", "plyr","fcuk", 
                        "proto", "pvclust", "raster", "Rcmdr", "RcmdrMisc", "RcmdrPlugin.FactoMineR", 
                        "RColorBrewer", "Rcpp", "readr", "readxl",  
+                             "pkgbuild", "pkgconfig","pkgload",
+                            
+                            
                        "reshape", "reshape2", "rJava", "rmarkdown", "roxygen2",  
                        "sandwich", "sas7bdat", "scales", "scatterplot3d", "SensoMineR", 
                        "splines", "sqldf", "stats", "stringr", "survival", "tcltk", 
