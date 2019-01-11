@@ -27,7 +27,7 @@ exc <- names(packs[,'Package'])
   ainstaller<-unique(sort(c("abind","arsenal", "abn","remotes", "bbmle", "bit64", "CADFtest","rmdformats","writexl",
                             "pryr","ggraph","togglr","shinyBS",
                             
-                            "car", "chron", "usethis","reprex","rusk","gapminder","shinyWidgets",
+                            "car", "chron", "DT","usethis","reprex","rusk","gapminder","shinyWidgets",
                        "class", "cluster", "colorspace", "compiler", "data.table", "DBI", 
                        "devEMF", "devtools", "dichromat", "digest", "doSNOW", "dplyr","dygraphs", 
                        "e1071", "ellipse", "evaluate", "explor", "FactoMineR", "Factoshiny", "plotly",
