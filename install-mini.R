@@ -29,7 +29,7 @@ exc <- names(packs[,'Package'])
                             
                             "car", "chron", "DT","usethis","reprex","rusk","gapminder","shinyWidgets",
                        "class", "cluster", "colorspace", "compiler", "data.table", "DBI", 
-                       "devEMF", "devtools", "dichromat", "digest", "doSNOW", "dplyr","dygraphs", 
+                       "devEMF", "devtools", "dichromat", "digest", "doSNOW", "dplyr","dygraphs", "DT",
                        "e1071", "ellipse", "evaluate", "explor", "FactoMineR", "Factoshiny", "plotly",
                         "forecast", "foreign", "formatR", "Formula", "fortunes", 
                        "ggplot2", "ggthemes", "gmm", "gplots", "graphics", "grDevices", 
