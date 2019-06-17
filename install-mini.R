@@ -92,7 +92,7 @@ cat("installations depuis github")
 try(remotes::install_github( "ThinkR-open/prenoms" ))
 try(remotes::install_github("ThinkR-open/remedy"))
 try(remotes::install_github("ThinkR-open/shopping"))
-try(remotes::install_github("Thinkr-open/shinytemplate"))
+try(remotes::install_github("Thinkr-open/golem"))
 cat("    FIN - installations depuis github")
 
 
