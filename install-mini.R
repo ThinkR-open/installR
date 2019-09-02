@@ -49,7 +49,8 @@ exc <- names(packs[,'Package'])
                        "XLConnectJars", "xtable", "xts", "zoo","shinydashboard","fcuk","attempt",
                        "icarus", "proustr", "rvest", "httr", "R6", "tidytext", "tidystringdist",
                        "topicmodels","broom", "h2o", "rpart", "randomForest", "gbm","thinkr","rusk", 
-                       "rmdformats", "shinydashboard", "microbenchmark", "nycflights13", "reprex","skimr"
+                       "rmdformats", "shinydashboard", "microbenchmark", "nycflights13", "reprex","skimr", 
+                            "golem"
                        )))
   
  
