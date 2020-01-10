@@ -25,7 +25,7 @@ exc <- names(packs[,'Package'])
   local({r <- getOption("repos"); r["CRAN"] <- "http://cran.r-project.org/"; options(repos=r)})
   # update.packages(ask=FALSE)
   ainstaller<-unique(sort(c("abind","arsenal", "abn","remotes", "bbmle", "bit64", "CADFtest","rmdformats","writexl",
-                            "pryr","ggraph","togglr","shinyBS",
+                            "pryr","ggraph","togglr","shinyBS","vroom",
                             
                             "car", "chron", "DT","usethis","reprex","rusk","gapminder","shinyWidgets",
                        "class", "cluster", "colorspace", "compiler", "data.table", "DBI", 
