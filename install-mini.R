@@ -85,10 +85,10 @@ cat("\n\n\n ***FIN DU SCRIPT*** \n\n\n")
 
 cat("installations depuis github")
 
-try(remotes::install_github( "ThinkR-open/prenoms" ))
-try(remotes::install_github("ThinkR-open/remedy"))
-try(remotes::install_github("ThinkR-open/shopping"))
-try(remotes::install_github("Thinkr-open/golem"))
+try(remotes::install_github( "ThinkR-open/prenoms"  ,upgrade = "always"))
+try(remotes::install_github("ThinkR-open/remedy" ,upgrade = "always"))
+try(remotes::install_github("ThinkR-open/shopping" ,upgrade = "always"))
+try(remotes::install_github("Thinkr-open/golem" ,upgrade = "always"))
 cat("    FIN - installations depuis github")
 
 
