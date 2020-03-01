@@ -24,34 +24,29 @@ packs <- installed.packages()
 exc <- names(packs[,'Package'])
   local({r <- getOption("repos"); r["CRAN"] <- "http://cran.r-project.org/"; options(repos=r)})
   # update.packages(ask=FALSE)
-  ainstaller<-unique(sort(c("abind","arsenal", "abn","remotes", "bbmle", "bit64", "CADFtest","rmdformats","writexl",
-                            "pryr","ggraph","togglr","shinyBS","vroom",
-                            
-                            "car", "chron", "DT","usethis","reprex","rusk","gapminder","shinyWidgets",
-                       "class", "cluster", "colorspace", "compiler", "data.table", "DBI", 
-                       "devEMF", "devtools", "dichromat", "digest", "doSNOW", "dplyr","dygraphs", "DT",
-                       "e1071", "ellipse", "evaluate", "explor", "FactoMineR", "Factoshiny", "plotly",
-                        "forecast", "foreign", "formatR", "Formula", "fortunes", 
-                       "ggplot2", "ggthemes", "gmm", "gplots", "graphics", "grDevices", 
-                       "grid", "gtable", "haven", "hflights", "highr", "Hmisc", "htmltools", 
-                       "jpeg", "knitr", "labeling", "lattice", "latticeExtra", "leaps", 
-                       "markdown", "MASS", "methods", "mime", "moments", "munsell", 
-                        "nls2", "nnet", "nortest", "openxlsx", "packrat", "plyr","fcuk", "xaringan",
-                       "proto", "pvclust", "raster", "Rcmdr", "RcmdrMisc", "RcmdrPlugin.FactoMineR", 
-                       "RColorBrewer", "Rcpp", "readr", "readxl",  
-                             "pkgbuild", "pkgconfig","pkgload",
-                            
-                            
-                       "reshape", "reshape2", "rJava", "rmarkdown", "roxygen2",  
-                       "sandwich", "sas7bdat", "scales", "scatterplot3d", "SensoMineR", 
-                       "splines", "sqldf", "stats", "stringr", "survival", "tcltk", 
-                       "tcltk2", "tidyverse", "tools", "tseries", "utils", "XLConnect", 
-                       "XLConnectJars", "xtable", "xts", "zoo","shinydashboard","fcuk","attempt",
-                       "icarus", "proustr", "rvest", "httr", "R6", "tidytext", "tidystringdist",
-                       "topicmodels","broom", "h2o", "rpart", "randomForest", "gbm","thinkr","rusk", 
-                       "rmdformats", "shinydashboard", "microbenchmark", "nycflights13", "reprex","skimr", "attachment",
-                            "golem"
-                       )))
+  ainstaller<-unique(sort(c("abind", "abn", "arsenal", "attachment", "attempt", "bbmle", 
+                          "bit64", "broom", "car", "chron", "class", "cluster", "colorspace", 
+                          "compiler", "data.table", "DBI", "devEMF", "devtools", "dichromat", 
+                          "digest", "doSNOW", "dplyr", "DT", "dygraphs", "e1071", "ellipse", 
+                          "evaluate", "explor", "FactoMineR", "fcuk", "forecast", 
+                          "foreign", "formatR", "Formula", "fortunes", "gapminder", "gbm", 
+                          "ggplot2", "ggraph", "ggthemes", "golem", "gplots", "graphics", 
+                          "grDevices", "grid", "gtable", "h2o", "haven", "hflights", "highr", 
+                          "Hmisc", "htmltools", "httr", "icarus", "jpeg", "knitr", "labeling", 
+                          "lattice", "latticeExtra", "leaps", "markdown", "MASS", "methods", 
+                          "microbenchmark", "mime", "munsell", "nnet", "nycflights13", 
+                          "openxlsx", "packrat", "pkgbuild", "pkgconfig", "pkgload", "plotly", 
+                          "proto", "proustr", "pryr", "R6", "randomForest", "raster", "RColorBrewer", 
+                          "Rcpp", "readr", "readxl", "remotes", "reprex", "reshape", "reshape2", 
+                          "rJava", "rmarkdown", "rmdformats", "roxygen2", "rpart", "rusk", 
+                          "rvest", "sandwich", "sas7bdat", "scales", "scatterplot3d", "shinyBS", 
+                          "shinydashboard", "shinyWidgets", "skimr", "splines", "sqldf", 
+                          "stats", "stringr", "survival", "tcltk", "tcltk2", "thinkr", 
+                          "tidystringdist", "tidytext", "tidyverse", "togglr", "tools", 
+                          "topicmodels", "tseries", "usethis", "utils", "vroom", "writexl", 
+                          "xaringan", "XLConnect", "XLConnectJars", "xtable", "xts", "zoo"
+)))
+
   
  
 if( exists(x="from_thinkR")){ainstaller<-from_thinkR
