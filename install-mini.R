@@ -89,7 +89,7 @@ try(remotes::install_github( "ThinkR-open/prenoms"  ,upgrade = "always"))
 try(remotes::install_github("ThinkR-open/remedy" ,upgrade = "always"))
 try(remotes::install_github("ThinkR-open/shopping" ,upgrade = "always"))
 try(remotes::install_github("Thinkr-open/golem" ,upgrade = "always"))
-try(remotes::install_github("rstudio/parsons"),upgrade = "never")
+~#try(remotes::install_github("rstudio/parsons"),upgrade = "never")
 cat("    FIN - installations depuis github")
 
 
