@@ -1,32 +1,3 @@
-percent <- function(x, digits = 2, format = "f", ...) {
-  paste0(
-    formatC(
-      100 * x, 
-      format = format, 
-      digits = digits, 
-      ...
-    ), 
-    "%"
-  )
-}
-
-mon_print <- function(synth){
-  N <- nrow(synth)
-  if( is.null(N) ){
-    N <- 1
-    synth <- matrix(
-      synth,
-      nrow=1
-    )
-  }
-  
-  for ( i in 1:N){
-    tp <- synth[i,]
-    tp[1]  <-stringr::str_pad(tp[1],15,side="right")
-    cat(tp,"\n")
-  }
-}
-
 packs <- as.data.frame(installed.packages())
 if (! "remotes" %in% packs$Package ){
   install.packages("remotes")
