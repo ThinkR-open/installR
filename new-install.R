@@ -214,8 +214,9 @@ withr::with_options(
       cli::cat_bullet(
         sprintf(
           "Starting %s installation", 
-          i
-        ), bullet = "play"
+          pak
+        ), 
+        bullet = "play"
       )
       
       tst <- attempt::attempt({
