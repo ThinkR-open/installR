@@ -148,7 +148,7 @@ success <- c()
 
 withr::with_options(
   c(repos =  "http://cran.r-project.org/"), {
-    cli:cat_rule("Starting packages installation")
+    cli::cat_rule("Starting packages installation")
     
     library(progress)
     pb <- progress_bar$new(total = length(to_install))
