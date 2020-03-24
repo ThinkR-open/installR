@@ -154,33 +154,37 @@ withr::with_options(
     pb <- progress_bar$new(total = length(to_install))
     
     for (i in seq_along(to_install)){
-      
+      pak <- to_install[i]
       cli::cat_bullet(
         sprintf(
           "Starting %s installation", 
-          i
+          pak
         ), bullet = "play"
       )
       
       tst <- attempt::attempt({
-        remotes::install_cran(i, quiet = TRUE)
+        remotes::install_cran(
+          pak, 
+          quiet = TRUE
+        )
       })
       if (attempt::is_try_error(tst)){
         cli::cat_bullet(
           sprintf(
-            "Error installing %s", i
+            "Error installing %s",
+            pak
           ), 
           bullet = "cross"
         )
-        failed <- c(failed, i)
+        failed <- c(failed, pak)
       } else {
         cli::cat_bullet(
           sprintf(
-            "%s installed", i
+            "%s installed", pak
           ), 
           bullet = "tick"
         )
-        success <- c(success, i)
+        success <- c(success, pak)
       }
     }
     
@@ -202,7 +206,7 @@ withr::with_options(
     pb <- progress_bar$new(total = length(to_install))
     
     for (i in seq_along(to_install)){
-      
+      pak <- to_install[i]
       cli::cat_bullet(
         sprintf(
           "Starting %s installation", 
@@ -212,7 +216,7 @@ withr::with_options(
       
       tst <- attempt::attempt({
         remotes::install_github(
-          i,
+          pak,
           upgrade = "always", 
           quiet = TRUE
         )
@@ -220,19 +224,19 @@ withr::with_options(
       if (attempt::is_try_error(tst)){
         cli::cat_bullet(
           sprintf(
-            "Error installing %s", i
+            "Error installing %s", pak
           ), 
           bullet = "cross"
         )
-        failed <- c(failed, i)
+        failed <- c(failed, pak)
       } else {
         cli::cat_bullet(
           sprintf(
-            "%s installed", i
+            "%s installed", pak
           ), 
           bullet = "tick"
         )
-        success <- c(success, i)
+        success <- c(success, pak)
       }
     }
     
