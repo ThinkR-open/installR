@@ -246,6 +246,6 @@ withr::with_options(
 cli::cat_line()
 cli::cat_line()
 cli::cat_rule("The following package(s) have been installed:")
-cli::cat_bullet(failed, bullet="tick")
+cli::cat_bullet(success, bullet="tick")
 cli::cat_rule("The following package(s) failed to install:")
-cli::cat_bullet(success, bullet="cross")
+cli::cat_bullet(failed, bullet="cross")
