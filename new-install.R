@@ -147,13 +147,15 @@ failed <- c()
 success <- c()
 
 withr::with_options(
-  c(repos =  "http://cran.r-project.org/"), {
+  c(repos =  "https://cran.rstudio.com"), {
     cli::cat_rule("Starting packages installation")
     
     library(progress)
     pb <- progress_bar$new(total = length(to_install))
     
     for (i in seq_along(to_install)){
+      pb$tick()
+      cli::cat_line()
       pak <- to_install[i]
       cli::cat_bullet(
         sprintf(
@@ -199,13 +201,15 @@ to_install <- c(
 )
 
 withr::with_options(
-  c(repos =  "http://cran.r-project.org/"), {
+  c(repos =  "https://cran.rstudio.com"), {
     cli:cat_rule("Starting packages installation")
     
     library(progress)
     pb <- progress_bar$new(total = length(to_install))
     
     for (i in seq_along(to_install)){
+      cli::cat_line()
+      pb$tick()
       pak <- to_install[i]
       cli::cat_bullet(
         sprintf(
@@ -238,6 +242,7 @@ withr::with_options(
         )
         success <- c(success, pak)
       }
+      
     }
     
   }
