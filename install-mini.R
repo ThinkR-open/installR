@@ -44,7 +44,7 @@ exc <- names(packs[,'Package'])
                           "stats", "stringr", "survival", "tcltk", "tcltk2", "thinkr", 
                           "tidystringdist", "tidytext", "tidyverse", "togglr", "tools", 
                           "topicmodels", "tseries", "usethis", "utils", "vroom", "writexl", 
-                          "xaringan", "XLConnect", "XLConnectJars", "xtable", "xts", "zoo","learnr",""
+                          "xaringan", "XLConnect", "XLConnectJars", "xtable", "xts", "zoo","learnr","golem","remedy"
 )))
 
   
@@ -86,9 +86,9 @@ cat("\n\n\n ***FIN DU SCRIPT*** \n\n\n")
 cat("installations depuis github")
 
 try(remotes::install_github( "ThinkR-open/prenoms"  ,upgrade = "always"))
-try(remotes::install_github("ThinkR-open/remedy" ,upgrade = "always"))
+#try(remotes::install_github("ThinkR-open/remedy" ,upgrade = "always"))
 try(remotes::install_github("ThinkR-open/shopping" ,upgrade = "always"))
-try(remotes::install_github("Thinkr-open/golem" ,upgrade = "always"))
+#try(remotes::install_github("Thinkr-open/golem" ,upgrade = "always"))
 ~#try(remotes::install_github("rstudio/parsons"),upgrade = "never")
 cat("    FIN - installations depuis github")
 
