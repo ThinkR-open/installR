@@ -80,6 +80,7 @@ to_install <- unique(
       "nycflights13",
       "openxlsx", 
       "packrat", 
+      "pander",
       "pkgbuild", 
       "pkgconfig", 
       "pkgload", 
