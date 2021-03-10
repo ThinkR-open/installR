@@ -115,6 +115,7 @@ to_install <- unique(
       "shinydashboard", 
       "shinyWidgets", 
       "skimr", 
+      "spelling",
       "splines", 
       "sqldf",
       "stats", 
