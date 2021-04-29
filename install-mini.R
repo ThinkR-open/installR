@@ -38,7 +38,7 @@ exc <- names(packs[,'Package'])
                           "openxlsx", "packrat", "pkgbuild", "pkgconfig", "pkgload", "plotly", 
                           "proto", "proustr", "pryr", "R6", "randomForest", "raster", "RColorBrewer", 
                           "Rcpp", "readr", "readxl", "remotes", "reprex", "reshape", "reshape2", 
-                          "rJava", "rmarkdown", "rmdformats", "roxygen2", "rpart", "rusk", "flextable",
+                          "rJava", "rmarkdown", "rmdformats", "roxygen2", "rpart", "flextable",
                           "rvest", "sandwich", "sas7bdat", "scales", "scatterplot3d", "shinyBS", 
                           "shinydashboard", "shinyWidgets", "skimr", "splines", "sqldf", 
                           "stats", "stringr", "survival", "tcltk", "tcltk2", "thinkr", 
