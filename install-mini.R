@@ -24,7 +24,7 @@ packs <- installed.packages()
 exc <- names(packs[,'Package'])
   local({r <- getOption("repos"); r["CRAN"] <- "http://cran.r-project.org/"; options(repos=r)})
   # update.packages(ask=FALSE)
-  ainstaller<-unique(sort(c("abind", "abn", "arsenal", "attachment", "attempt", "bbmle", 
+  ainstaller<-unique(sort(c("abind", "abn", "arsenal", "attachment", "attempt", "bbmle", "pander",
                           "bit64", "broom", "car", "chron", "class", "cluster", "colorspace", 
                           "compiler", "data.table", "DBI", "devEMF", "devtools", "dichromat", 
                           "digest", "doSNOW", "dplyr", "DT", "dygraphs", "e1071", "ellipse", 
