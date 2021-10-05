@@ -46,6 +46,7 @@ to_install <- unique(
       "formatR", 
       "Formula", 
       "fortunes", 
+      "fusen",
       "gapminder", 
       "gbm",
       "ggplot2", 
