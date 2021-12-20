@@ -9,10 +9,10 @@ update.packages(ask = FALSE)
 
 install.packages("pak")
 
-if (!requireNamespace("progress", quiet = TRUE)) {
+if (!requireNamespace("progress", quietly = TRUE)) {
   pak::pkg_install("progress")
 }
-if (!requireNamespace("cli", quiet = TRUE)) {
+if (!requireNamespace("cli", quietly = TRUE)) {
   pak::pkg_install("cli")
 }
 
