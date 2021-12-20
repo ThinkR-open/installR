@@ -1,6 +1,6 @@
 options(
   repos = c(
-    REPO_NAME = "https://packagemanager.rstudio.com/all/__linux__/bionic/2021-12-14"
+    REPO_NAME = "https://packagemanager.rstudio.com/cran/__linux__/bionic/2021-12-14"
   ),
   Ncpus = 6
 )
