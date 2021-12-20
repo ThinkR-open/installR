@@ -1,6 +1,6 @@
 options(
   repos = c(
-    REPO_NAME = "https://packagemanager.rstudio.com/all/__linux__/bionic/latest/"
+    REPO_NAME = "https://packagemanager.rstudio.com/all/__linux__/bionic/2021-12-14"
   ),
   Ncpus = 6
 )
@@ -14,6 +14,9 @@ if (!requireNamespace("progress", quietly = TRUE)) {
 }
 if (!requireNamespace("cli", quietly = TRUE)) {
   pak::pkg_install("cli")
+}
+if (!requireNamespace("attempt", quietly = TRUE)) {
+  pak::pkg_install("attempt")
 }
 
 to_install <- unique(
