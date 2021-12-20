@@ -9,8 +9,12 @@ update.packages(ask = FALSE)
 
 install.packages("pak")
 
-pak::pkg_install("progress")
-pak::pkg_install("cli")
+if (!requireNamespace("progress", quiet = TRUE)) {
+  pak::pkg_install("progress")
+}
+if (!requireNamespace("cli", quiet = TRUE)) {
+  pak::pkg_install("cli")
+}
 
 to_install <- unique(
   sort(
@@ -208,12 +212,24 @@ cli::cat_rule("Starting packages installation")
 library(progress)
 pb <- progress_bar$new(total = length(to_install))
 
+packs <- as.data.frame(installed.packages())
+
 for (i in seq_along(to_install)) {
   pb$tick()
 
   cli::cat_line()
 
   pak <- to_install[i]
+
+  if (pak %in% packs$Package) {
+    cli::cat_rule(
+      sprintf(
+        "%s is already installed, skipping",
+        pak
+      )
+    )
+    next()
+  }
 
   cli::cat_bullet(
     sprintf(
