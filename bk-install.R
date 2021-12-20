@@ -242,7 +242,7 @@ for (i in seq_along(to_install)) {
   tst <- attempt::attempt({
     pak::pkg_install(
       pak,
-      quiet = TRUE
+      upgrade = FALSE
     )
   })
 
