@@ -201,7 +201,9 @@ to_install <- unique(
       "ropensci/rnaturalearthhires",
       "statnmap/cartomisc",
       "remotes",
-      "thinkr-open/golem@master"
+      "golem",
+      #"thinkr-open/golem@master",
+      "VincentGuyader/tutor"
     )
   )
 )
@@ -210,6 +212,10 @@ failed <- c()
 success <- c()
 
 cli::cat_rule("Starting packages installation")
+
+
+
+
 
 library(progress)
 pb <- progress_bar$new(total = length(to_install))
@@ -269,6 +275,11 @@ for (i in seq_along(to_install)) {
 }
 
 cli::cat_rule("Installation ended.")
+
+
+
+
+
 
 cli::cat_line()
 cli::cat_line()
