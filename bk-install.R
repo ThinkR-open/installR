@@ -118,7 +118,6 @@ to_install <- unique(
       "rmdformats",
       "roxygen2",
       "rpart",
-      "rusk",
       "flextable",
       "rvest",
       "sandwich",
