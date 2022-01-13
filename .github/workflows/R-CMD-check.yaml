@@ -18,8 +18,11 @@ jobs:
       image: rocker/geospatial:4.1.2
 
     steps:
-      - name: Before build
-        run: bash ./bk-config.sh
+      - name: ls
+        run: ls
 
-      - name: Build redirect
-        run: Rscript ./bk-install.R
+      - name: bk-config.sh
+        run: bash bk-config.sh
+
+      - name: bk-install.R
+        run: Rscript bk-install.R
