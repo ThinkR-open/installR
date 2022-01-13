@@ -97,7 +97,7 @@ to_install <- unique(
       "pander",
       "pkgbuild",
       "pkgconfig",
-      'pkgdown",
+      "pkgdown",
       "pkgload",
       "plotly",
       "proto",
@@ -204,7 +204,7 @@ to_install <- unique(
       "statnmap/cartomisc",
       "remotes",
       "golem",
-      #"thinkr-open/golem@master",
+      # "thinkr-open/golem@master",
       "VincentGuyader/tutor"
     )
   )
