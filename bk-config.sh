@@ -72,3 +72,8 @@ apt-get -y install libxpm4 \
     xfonts-scalable \
     google-chrome-stable
 
+# NodeJS
+
+apt-get -y install curl gnupg && \
+    curl -sL https://deb.nodesource.com/setup_14.x   | bash - && \
+    apt-get -y --allow-unauthenticated install nodejs
