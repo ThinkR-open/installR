@@ -23,7 +23,6 @@ to_install <- unique(
   sort(
     c(
       "abind",
-      "abn",
       "arsenal",
       "attachment",
       "attempt",
@@ -89,7 +88,8 @@ to_install <- unique(
       "MASS",
       "methods",
       "microbenchmark",
-      "mime", "munsell",
+      "mime",
+      "munsell",
       "nnet",
       "nycflights13",
       "openxlsx",
@@ -153,8 +153,6 @@ to_install <- unique(
       "webshot",
       "writexl",
       "xaringan",
-      "XLConnect",
-      "XLConnectJars",
       "xtable",
       "xts",
       "zoo",
@@ -204,7 +202,7 @@ to_install <- unique(
       "statnmap/cartomisc",
       "remotes",
       "golem",
-      # "thinkr-open/golem@master",
+      "covr",
       "VincentGuyader/tutor"
     )
   )
