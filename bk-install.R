@@ -213,10 +213,6 @@ success <- c()
 
 cli::cat_rule("Starting packages installation")
 
-
-
-
-
 library(progress)
 pb <- progress_bar$new(total = length(to_install))
 
@@ -276,7 +272,80 @@ for (i in seq_along(to_install)) {
 
 cli::cat_rule("Installation ended.")
 
+# LATEST FUSEN
 
+tst <- attempt::attempt({
+  remotes::install_cran("fusen", repos = "https://packagemanager.rstudio.com/all/latest")
+})
+
+if (attempt::is_try_error(tst)) {
+  cli::cat_bullet(
+    sprintf(
+      "Error installing %s",
+      pak
+    ),
+    bullet = "cross"
+  )
+  failed <- c(failed, pak)
+} else {
+  cli::cat_bullet(
+    sprintf(
+      "%s installed", pak
+    ),
+    bullet = "tick"
+  )
+  success <- c(success, pak)
+}
+
+# LATEST vincentguyader/learnr
+
+tst <- attempt::attempt({
+  remotes::install_github("vincentguyader/learnr", force = TRUE, repos = "https://packagemanager.rstudio.com/all/latest")
+})
+
+if (attempt::is_try_error(tst)) {
+  cli::cat_bullet(
+    sprintf(
+      "Error installing %s",
+      pak
+    ),
+    bullet = "cross"
+  )
+  failed <- c(failed, pak)
+} else {
+  cli::cat_bullet(
+    sprintf(
+      "%s installed", pak
+    ),
+    bullet = "tick"
+  )
+  success <- c(success, pak)
+}
+
+# LATEST vincentguyader/tutor
+
+tst <- attempt::attempt({
+  remotes::install_github("vincentguyader/tutor", force = TRUE, repos = "https://packagemanager.rstudio.com/all/latest")
+})
+
+if (attempt::is_try_error(tst)) {
+  cli::cat_bullet(
+    sprintf(
+      "Error installing %s",
+      pak
+    ),
+    bullet = "cross"
+  )
+  failed <- c(failed, pak)
+} else {
+  cli::cat_bullet(
+    sprintf(
+      "%s installed", pak
+    ),
+    bullet = "tick"
+  )
+  success <- c(success, pak)
+}
 
 
 
