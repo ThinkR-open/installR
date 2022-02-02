@@ -30,7 +30,8 @@ apt-get update \
     sqlite3 \
     tk-dev \
     unixodbc-dev \
-    imagemagick
+    imagemagick \
+    libsecret-1-dev
 
 apt-get install -y \
     libmagick++-dev \
