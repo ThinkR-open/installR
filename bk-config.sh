@@ -31,7 +31,7 @@ apt-get update \
     tk-dev \
     unixodbc-dev \
     imagemagick \
-    libsecret-1-dev
+    libsecret-1-dev 
 
 apt-get install -y \
     libmagick++-dev \
@@ -48,6 +48,9 @@ apt-get update \
     apt-get install -y --no-install-recommends \
   default-mysql-client \
   default-libmysqlclient-dev  
+
+# Divers
+apt-get install -y r-cran-rjava cron
 
 # Locals
 apt-get install -y language-pack-fr
