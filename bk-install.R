@@ -202,8 +202,7 @@ to_install <- unique(
       "statnmap/cartomisc",
       "remotes",
       "golem",
-      "covr",
-      "VincentGuyader/tutor"
+      "covr"
     )
   )
 )
@@ -214,7 +213,9 @@ success <- c()
 cli::cat_rule("Starting packages installation")
 
 library(progress)
-pb <- progress_bar$new(total = length(to_install))
+pb <- progress_bar$new(
+  total = length(to_install)
+)
 
 packs <- as.data.frame(installed.packages())
 
@@ -258,11 +259,15 @@ for (i in seq_along(to_install)) {
       ),
       bullet = "cross"
     )
-    failed <- c(failed, pak)
+    failed <- c(
+      failed,
+      pak
+    )
   } else {
     cli::cat_bullet(
       sprintf(
-        "%s installed", pak
+        "%s installed",
+        pak
       ),
       bullet = "tick"
     )
@@ -275,80 +280,86 @@ cli::cat_rule("Installation ended.")
 # LATEST FUSEN
 
 tst <- attempt::attempt({
-  remotes::install_cran("fusen", repos = "https://packagemanager.rstudio.com/all/latest")
+  remotes::install_cran(
+    "fusen",
+    repos = "https://packagemanager.rstudio.com/all/latest"
+  )
 })
 
 if (attempt::is_try_error(tst)) {
   cli::cat_bullet(
     sprintf(
       "Error installing %s",
-      pak
+      "{fusen}"
     ),
     bullet = "cross"
   )
-  failed <- c(failed, pak)
+  failed <- c(
+    failed,
+    pak
+  )
 } else {
   cli::cat_bullet(
     sprintf(
-      "%s installed", pak
+      "%s installed",
+      "fusen"
     ),
     bullet = "tick"
   )
-  success <- c(success, pak)
+  success <- c(
+    success,
+    pak
+  )
 }
 
-# LATEST vincentguyader/learnr
+# LATEST thinkr-open/tutor
+# Just to be sure we have the correct version of {learnr}
+remove.packages("learnr")
 
 tst <- attempt::attempt({
-  remotes::install_github("vincentguyader/learnr", force = TRUE, repos = "https://packagemanager.rstudio.com/all/latest")
+  remotes::install_github(
+    "thinkr-open/tutor",
+    force = TRUE,
+    repos = "https://packagemanager.rstudio.com/all/latest"
+  )
 })
+
+# Remove the tutorials from learnr so that we only use the ones
+# from {tutor}
+unlink(
+  system.file(
+    "tutorials",
+    package = "learnr"
+  ),
+  TRUE,
+  TRUE
+)
 
 if (attempt::is_try_error(tst)) {
   cli::cat_bullet(
     sprintf(
       "Error installing %s",
-      pak
+      "tutor"
     ),
     bullet = "cross"
   )
-  failed <- c(failed, pak)
+  failed <- c(
+    failed,
+    pak
+  )
 } else {
   cli::cat_bullet(
     sprintf(
-      "%s installed", pak
+      "%s installed",
+      "tutor"
     ),
     bullet = "tick"
   )
-  success <- c(success, pak)
-}
-
-# LATEST vincentguyader/tutor
-
-tst <- attempt::attempt({
-  remotes::install_github("vincentguyader/tutor", force = TRUE, repos = "https://packagemanager.rstudio.com/all/latest")
-})
-
-if (attempt::is_try_error(tst)) {
-  cli::cat_bullet(
-    sprintf(
-      "Error installing %s",
-      pak
-    ),
-    bullet = "cross"
+  success <- c(
+    success,
+    pak
   )
-  failed <- c(failed, pak)
-} else {
-  cli::cat_bullet(
-    sprintf(
-      "%s installed", pak
-    ),
-    bullet = "tick"
-  )
-  success <- c(success, pak)
 }
-
-
-
 
 cli::cat_line()
 cli::cat_line()
