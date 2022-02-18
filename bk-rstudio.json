@@ -1,0 +1,10 @@
+{
+    "highlight_r_function_calls": true,
+    "load_workspace": false,
+    "margin_column": 90,
+    "save_workspace": "never",
+    "scroll_past_end_of_document": true,
+    "show_margin": true,
+    "strip_trailing_whitespace": true,
+    "syntax_color_console": true
+}
