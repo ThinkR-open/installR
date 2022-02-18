@@ -23,6 +23,10 @@ to_install <- unique(
   sort(
     c(
       "abind",
+      "ggtext",
+      "patchwork",
+      "cowplot",
+      "showtext",
       "arsenal",
       "attachment",
       "attempt",
