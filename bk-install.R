@@ -206,7 +206,8 @@ to_install <- unique(
       "statnmap/cartomisc",
       "remotes",
       "golem",
-      "covr"
+      "covr",
+      "furrr"
     )
   )
 )
@@ -364,6 +365,12 @@ if (attempt::is_try_error(tst)) {
     pak
   )
 }
+
+# Keyring from source
+remotes::install_cran(
+  "keyring",
+  repos = "https://cran.rstudio.com"
+)
 
 cli::cat_line()
 cli::cat_line()
