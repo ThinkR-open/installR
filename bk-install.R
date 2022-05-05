@@ -61,7 +61,9 @@ to_install <- unique(
       "formatR",
       "Formula",
       "fortunes",
-      "fusen",
+      # installed via install_cran at the bottom of the script
+      # for the latest version
+      # "fusen",
       "gapminder",
       "gitlabr",
       "gbm",
@@ -369,6 +371,12 @@ if (attempt::is_try_error(tst)) {
 # Keyring from source
 remotes::install_cran(
   "keyring",
+  repos = "https://cran.rstudio.com"
+)
+
+# Latest version of fusen
+remotes::install_cran(
+  "fusen",
   repos = "https://cran.rstudio.com"
 )
 
