@@ -1,7 +1,4 @@
 options(
-  repos = c(
-    REPO_NAME = "https://packagemanager.rstudio.com/cran/__linux__/bionic/2021-12-14"
-  ),
   Ncpus = 6
 )
 
@@ -398,5 +395,5 @@ cli::cat_bullet("PhantomJS installed", bullet = "tick")
 
 cli::cat_line()
 cli::cat_rule("Installing tinytex")
-tinytex::install_tinytex()
+tinytex::install_tinytex(force = TRUE)
 cli::cat_bullet("tinytex installed", bullet = "tick")
