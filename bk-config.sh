@@ -14,6 +14,8 @@ apt-get update \
     libglu1-mesa-dev \
     libhdf4-alt-dev \
     libhdf5-dev \
+    libfribidi-dev \
+    libharfbuzz-dev \
     libmagick++-dev \
     libjq-dev \
     liblwgeom-dev \
