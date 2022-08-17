@@ -25,9 +25,12 @@ jobs:
     steps:
       - name: ls
         run: ls
+        shell: bash
 
       - name: bk-config.sh
         run: sh bk-config.sh
+        shell: bash
 
       - name: bk-install.R
         run: Rscript bk-install.R
+        shell: bash
