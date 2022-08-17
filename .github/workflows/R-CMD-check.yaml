@@ -1,8 +1,13 @@
 on:
   push:
     branches:
+      - main
       - master
-
+  pull_request:
+    branches:
+      - main
+      - master
+      
 env:
   GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
@@ -22,7 +27,7 @@ jobs:
         run: ls
 
       - name: bk-config.sh
-        run: bash bk-config.sh
+        run: sh bk-config.sh
 
       - name: bk-install.R
         run: Rscript bk-install.R
