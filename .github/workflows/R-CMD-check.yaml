@@ -23,6 +23,8 @@ jobs:
       image: rocker/geospatial:4.1.2
 
     steps:
+      - uses: actions/checkout@v3
+      
       - name: ls
         run: ls
         shell: bash
