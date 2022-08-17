@@ -1,6 +1,4 @@
 #!/bin/bash
-add-apt-repository --enable-source --yes "ppa:marutter/rrutter3.5"
-add-apt-repository --enable-source --yes "ppa:marutter/c2d4u3.5"
 
 # Spatial stuff
 apt-get update \

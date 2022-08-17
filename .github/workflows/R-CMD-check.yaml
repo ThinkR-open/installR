@@ -36,3 +36,7 @@ jobs:
       - name: bk-install.R
         run: Rscript bk-install.R
         shell: bash
+        
+      - name: new-install.R
+        run: Rscript new-install.R
+        shell: bash
