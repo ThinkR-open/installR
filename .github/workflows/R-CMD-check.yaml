@@ -1,8 +1,13 @@
 on:
   push:
     branches:
+      - main
       - master
-
+  pull_request:
+    branches:
+      - main
+      - master
+      
 env:
   GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
@@ -18,11 +23,20 @@ jobs:
       image: rocker/geospatial:4.1.2
 
     steps:
+      - uses: actions/checkout@v3
+      
       - name: ls
         run: ls
+        shell: bash
 
       - name: bk-config.sh
-        run: bash bk-config.sh
+        run: sh bk-config.sh
+        shell: bash
 
       - name: bk-install.R
         run: Rscript bk-install.R
+        shell: bash
+        
+      - name: new-install.R
+        run: Rscript new-install.R
+        shell: bash

@@ -1,6 +1,4 @@
 #!/bin/bash
-add-apt-repository --enable-source --yes "ppa:marutter/rrutter3.5"
-add-apt-repository --enable-source --yes "ppa:marutter/c2d4u3.5"
 
 # Spatial stuff
 apt-get update \
@@ -9,14 +7,18 @@ apt-get update \
     libfftw3-dev \
     libgdal-dev \
     libgeos-dev \
+    libudunits2-dev \
+    libnode-dev \
+    libcairo2-dev \
     libgsl0-dev \
     libgl1-mesa-dev \
     libglu1-mesa-dev \
     libhdf4-alt-dev \
     libhdf5-dev \
+    libfribidi-dev \
+    libharfbuzz-dev \
     libmagick++-dev \
     libjq-dev \
-    liblwgeom-dev \
     libpq-dev \
     libproj-dev \
     libprotobuf-dev \
@@ -41,7 +43,8 @@ apt-get install -y \
     protobuf-compiler  \
     libsodium-dev  \
     imagemagick \
-    libgit2-dev
+    libgit2-dev \
+    xclip
 
 # database ----
 apt-get update \
