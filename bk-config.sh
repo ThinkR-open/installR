@@ -53,7 +53,7 @@ apt-get update \
   default-libmysqlclient-dev  
 
 # Divers
-apt-get install -y r-cran-rjava cron
+apt-get install -y r-cran-rjava cron nano
 
 # Locals
 apt-get install -y language-pack-fr
