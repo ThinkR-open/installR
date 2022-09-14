@@ -26,6 +26,7 @@ apt-get update \
     libsqlite3-dev \
     libssl-dev \
     libudunits2-dev \
+    nano \
     netcdf-bin \
     postgis \
     protobuf-compiler \
