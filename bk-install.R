@@ -58,9 +58,7 @@ to_install <- unique(
       "formatR",
       "Formula",
       "fortunes",
-      # installed via install_cran at the bottom of the script
-      # for the latest version
-      # "fusen",
+      "fusen",
       "gapminder",
       "gert",
       "gbm",
@@ -85,6 +83,7 @@ to_install <- unique(
       "icarus",
       "interp",
       "jpeg",
+      "keyring",
       "knitr",
       "labeling",
       "lattice",
@@ -290,40 +289,6 @@ for (i in seq_along(to_install)) {
 
 cli::cat_rule("Installation ended.")
 
-# LATEST FUSEN
-
-tst <- attempt::attempt({
-  remotes::install_cran(
-    "fusen",
-    repos = "https://packagemanager.rstudio.com/all/latest"
-  )
-})
-
-if (attempt::is_try_error(tst)) {
-  cli::cat_bullet(
-    sprintf(
-      "Error installing %s",
-      "{fusen}"
-    ),
-    bullet = "cross"
-  )
-  failed <- c(
-    failed,
-    pak
-  )
-} else {
-  cli::cat_bullet(
-    sprintf(
-      "%s installed",
-      "fusen"
-    ),
-    bullet = "tick"
-  )
-  success <- c(
-    success,
-    pak
-  )
-}
 
 # LATEST thinkr-open/tutor
 # Just to be sure we have the correct version of {learnr}
@@ -333,7 +298,7 @@ tst <- attempt::attempt({
   remotes::install_github(
     "thinkr-open/tutor",
     force = TRUE,
-    repos = "https://packagemanager.rstudio.com/all/latest"
+    upgrade = FALSE
   )
 })
 
@@ -373,18 +338,6 @@ if (attempt::is_try_error(tst)) {
     pak
   )
 }
-
-# Keyring from source
-remotes::install_cran(
-  "keyring",
-  repos = "https://cran.rstudio.com"
-)
-
-# Latest version of fusen
-remotes::install_cran(
-  "fusen",
-  repos = "https://cran.rstudio.com"
-)
 
 cli::cat_line()
 cli::cat_line()
