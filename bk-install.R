@@ -229,9 +229,10 @@ pb <- progress_bar$new(
   total = length(to_install)
 )
 
-packs <- as.data.frame(installed.packages())
-
 for (i in seq_along(to_install)) {
+  
+  packs <- as.data.frame(installed.packages())
+  
   pb$tick()
 
   cli::cat_line()
