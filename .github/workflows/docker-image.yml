@@ -48,7 +48,7 @@ jobs:
           push: true
           tags: installr-geo:4.1.2
           labels: ${{ steps.meta.outputs.labels }}
-          build-arg: 'FROM_IMAGE=rocker/geospatial:4.1.2'
+          build-args: 'FROM_IMAGE=rocker/geospatial:4.1.2'
           
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
@@ -57,4 +57,4 @@ jobs:
           push: true
           tags: installr-geo:4.2.0
           labels: ${{ steps.meta.outputs.labels }}
-          build-arg: 'FROM_IMAGE=rocker/geospatial:4.2.0'
+          build-args: 'FROM_IMAGE=rocker/geospatial:4.2.0'
