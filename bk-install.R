@@ -160,6 +160,7 @@ to_install <- unique(
       "usethis",
       "utils",
       "V8",
+      "visdat",
       "vroom",
       "webshot",
       "writexl",
