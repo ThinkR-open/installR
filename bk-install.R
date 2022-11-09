@@ -37,6 +37,7 @@ to_install <- unique(
       "cluster",
       "colorspace",
       "compiler",
+      "cowsay",
       "data.table",
       "DBI",
       "devEMF",
@@ -230,9 +231,9 @@ pb <- progress_bar$new(
 )
 
 for (i in seq_along(to_install)) {
-  
+
   packs <- as.data.frame(installed.packages())
-  
+
   pb$tick()
 
   cli::cat_line()
