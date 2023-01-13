@@ -109,6 +109,7 @@ to_install <- unique(
       "pkgdown",
       "pkgload",
       "plotly",
+      "prettydoc",
       "proto",
       "proustr",
       "pryr",
