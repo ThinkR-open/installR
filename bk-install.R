@@ -19,6 +19,7 @@ if (!requireNamespace("attempt", quietly = TRUE)) {
 to_install <- unique(
   sort(
     c(
+      "password",
       "abind",
       "ggtext",
       "patchwork",
