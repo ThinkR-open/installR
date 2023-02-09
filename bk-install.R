@@ -62,7 +62,7 @@ to_install <- unique(
       "formatR",
       "Formula",
       "fortunes",
-      "furrr"
+      "furrr",
       "fusen",
       "gapminder",
       "gbm",
@@ -221,6 +221,7 @@ to_install <- unique(
       "xtable",
       "xts",
       "zoo",
+      NULL
     )
   )
 )
