@@ -344,6 +344,11 @@ if (attempt::is_try_error(tst)) {
     pak
   )
 }
+cli::cat_line()
+cli::cat_line()
+cli::cat_rule("force keyring installation from source")
+install.packages('keyring',repos='http://cran.rstudio.com')
+
 
 cli::cat_line()
 cli::cat_line()
@@ -365,3 +370,6 @@ cli::cat_line()
 cli::cat_rule("Installing tinytex")
 tinytex::install_tinytex(force = TRUE)
 cli::cat_bullet("tinytex installed", bullet = "tick")
+
+
+
