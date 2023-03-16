@@ -18,7 +18,7 @@ if (!requireNamespace("attempt", quietly = TRUE)) {
 
 to_install <- unique(
   sort(
-  c(
+c(
   "abind",
   "arsenal",
   "attachment",
@@ -140,6 +140,7 @@ to_install <- unique(
   "pacman",
   "pagedown",
   "pander",
+  "password",
   "patchwork",
   "pkgbuild",
   "pkgconfig",
