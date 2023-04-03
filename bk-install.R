@@ -40,7 +40,7 @@ c(
   "covr",
   "cowplot",
   "cowsay",
-  "cranology",
+  "ThinkR-open/cranology",
   "data.table",
   "DBI",
   "devEMF",
