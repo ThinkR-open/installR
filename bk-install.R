@@ -155,6 +155,7 @@ c(
   "randomForest",
   "raster",
   "rasterVis",
+  "rayshader",
   "RColorBrewer",
   "Rcpp",
   "readr",
