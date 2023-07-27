@@ -6,6 +6,6 @@
     "scroll_past_end_of_document": true,
     "show_margin": true,
     "strip_trailing_whitespace": true,
-    "syntax_color_console": true
+    "syntax_color_console": true,
     "insert_native_pipe_operator": true
 }
