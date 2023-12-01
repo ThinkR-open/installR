@@ -207,6 +207,7 @@ c(
   "tcltk",
   "tcltk2",
   "terra",
+  "thematic",
   "thinkr",
   "ThinkR-open/inca3",
   "ThinkR-open/prenoms",
