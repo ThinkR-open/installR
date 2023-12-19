@@ -95,7 +95,7 @@ c(
   "grDevices",
   "grid",
   "gstat",
-  "gt"
+  "gt",
   "gtable",
   "gtExtra",
   "h2o",
