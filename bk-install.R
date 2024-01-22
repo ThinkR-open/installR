@@ -153,6 +153,7 @@ c(
   "proto",
   "proustr",
   "pryr",
+  "quarto",
   "R6",
   "randomForest",
   "raster",
