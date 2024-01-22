@@ -53,7 +53,7 @@ c(
   "dygraphs",
   "e1071",
   "ellipse",
-  "emo",
+  "hadley/emo",
   "emojifont",
   "evaluate",
   "explor",
@@ -83,7 +83,7 @@ c(
   "ggpubr",
   "ggraph",
   "ggrepel",
-  "ggsn",
+  "oswaldosantos/ggsn",
   "ggspatial",
   "ggtext",
   "ggthemes",
@@ -97,7 +97,7 @@ c(
   "gstat",
   "gt",
   "gtable",
-  "gtExtra",
+  "gtExtras",
   "h2o",
   "hadley/emo",
   "haven",
@@ -108,7 +108,7 @@ c(
   "htmltools",
   "httr",
   "icarus",
-  "inca3",
+  "ThinkR-open/inca3",
   "interp",
   "jpeg",
   "kableExtra",
@@ -168,7 +168,6 @@ c(
   "reprex",
   "reshape",
   "reshape2",
-  "rgeos",
   "rgl",
   "rJava",
   "RJSONIO",
@@ -281,7 +280,7 @@ for (i in seq_along(to_install)) {
   )
 
   tst <- attempt::attempt({
-    pak::pkg_install(
+    pak::pak(
       pak,
       upgrade = FALSE
     )
@@ -319,14 +318,14 @@ cli::cat_rule("Installation ended.")
 remove.packages("learnr")
 
 tst <- attempt::attempt({
-  remotes::install_github(
+  rtes::install_github(
     "thinkr-open/tutor",
     force = TRUE,
     upgrade = FALSE
   )
 })
 
-# Remove the tutorials from learnr so that we only use the ones
+# Rve the tutorials from learnr so that we only use the ones
 # from {tutor}
 unlink(
   system.file(
