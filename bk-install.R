@@ -83,7 +83,6 @@ c(
   "ggpubr",
   "ggraph",
   "ggrepel",
-  "oswaldosantos/ggsn",
   "ggspatial",
   "ggtext",
   "ggthemes",
