@@ -317,7 +317,7 @@ cli::cat_rule("Installation ended.")
 remove.packages("learnr")
 
 tst <- attempt::attempt({
-  rtes::install_github(
+  remotes::install_github(
     "thinkr-open/tutor",
     force = TRUE,
     upgrade = FALSE
