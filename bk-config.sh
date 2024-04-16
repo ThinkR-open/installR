@@ -58,7 +58,9 @@ apt-get install -y r-cran-rjava cron nano
 # Locals
 apt-get install -y language-pack-fr
 mv /etc/localtime /etc/localtime_backup \
-  && ln -s /usr/share/zoneinfo/Europe/Paris
+  && ln -fs /usr/share/zoneinfo/Europe/Paris /etc/localtime \
+  && dpkg-reconfigure -f noninteractive tzdata
+
 
 # Chromium for {pagedown} ----
 echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list
