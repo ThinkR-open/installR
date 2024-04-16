@@ -56,6 +56,7 @@ apt-get update \
 apt-get install -y r-cran-rjava cron nano
 
 # Locals
+apt-get install -y tzdata
 apt-get install -y language-pack-fr
 mv /etc/localtime /etc/localtime_backup \
   && ln -fs /usr/share/zoneinfo/Europe/Paris /etc/localtime \
