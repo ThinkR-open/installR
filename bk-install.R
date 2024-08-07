@@ -34,6 +34,7 @@ c(
   "chron",
   "class",
   "cluster",
+  "ColinFay/rfeel",
   "colorspace",
   "colourpicker",
   "compiler",
