@@ -25,6 +25,8 @@ c(
   "attempt",
   "bbmle",
   "bit64",
+  "bsicons",
+  "bslib",
   "bookdown",
   "broom",
   "car",
