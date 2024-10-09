@@ -150,6 +150,7 @@ c(
   "pkgconfig",
   "pkgdown",
   "pkgload",
+  "pkgnet",
   "plotly",
   "prettydoc",
   "proto",
