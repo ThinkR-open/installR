@@ -128,6 +128,7 @@ c(
   "mapdeck",
   "mapedit",
   "maps",
+  "mapsf",
   "mapview",
   "markdown",
   "MASS",
