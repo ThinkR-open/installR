@@ -33,7 +33,7 @@ apt-get update \
     tk-dev \
     unixodbc-dev \
     imagemagick \
-    libsecret-1-dev 
+    libsecret-1-dev
 
 apt-get install -y \
     libmagick++-dev \
@@ -50,7 +50,7 @@ apt-get install -y \
 apt-get update \
     apt-get install -y --no-install-recommends \
   default-mysql-client \
-  default-libmysqlclient-dev  
+  default-libmysqlclient-dev
 
 # Divers
 apt-get install -y r-cran-rjava cron nano
@@ -64,10 +64,12 @@ mv /etc/localtime /etc/localtime_backup \
 
 
 # Chromium for {pagedown} ----
-echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list
-apt-get install -y gnupg2 \
-  && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+
 apt-get update
+
+# TODO these libs are here
+# as they were historically installed for Chrome,
+# but I'm not sure if they are needed anymore, can we remove them?
 apt-get -y install libxpm4 \
     libxrender1 \
     libgtk2.0-0 \
@@ -79,8 +81,11 @@ apt-get -y install libxpm4 \
     xfonts-100dpi \
     xfonts-75dpi \
     xfonts-base \
-    xfonts-scalable \
-    google-chrome-stable
+    xfonts-scalable
+
+curl -LO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+apt-get install -y ./google-chrome-stable_current_amd64.deb
+rm google-chrome-stable_current_amd64.deb
 
 # NodeJS
 
