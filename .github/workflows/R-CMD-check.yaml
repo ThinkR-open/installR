@@ -30,7 +30,7 @@ jobs:
         shell: bash
 
       - name: bk-config.sh
-        run: sh bk-config.sh
+        run: bash bk-config.sh
         shell: bash
 
       - name: bk-install.R
