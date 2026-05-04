@@ -1,4 +1,21 @@
 #!/bin/bash
+# bk-config.sh — installation des dépendances système (R/spatial/Chrome/Node)
+#
+# Modifications par rapport à la version d'origine :
+#   - set -euo pipefail + trap ERR : tout échec de commande coupe le build
+#     proprement, plus rien ne passe en silence.
+#   - curl + gnupg installés AVANT la section Chrome (l'inversion d'ordre
+#     d'origine empêchait le téléchargement du .deb).
+#   - libgconf-2-4 retiré : paquet supprimé depuis Ubuntu 22.04
+#     (gconf déprécié, plus présent sur noble 24.04).
+#   - bloc "database" : "&&" rétabli entre `apt-get update` et `apt-get install`
+#     (le backslash isolé d'origine collait les deux commandes en une seule
+#     et l'install MySQL n'était jamais exécuté silencieusement).
+#   - curl -fLO / -fsSL : `-f` fait échouer curl sur HTTP 4xx/5xx au lieu
+#     d'enregistrer la page d'erreur HTML sous le nom attendu.
+
+set -euo pipefail
+trap 'echo "ERROR: bk-config.sh a échoué à la ligne $LINENO" >&2' ERR
 
 # Spatial stuff
 apt-get update \
@@ -48,9 +65,9 @@ apt-get install -y \
 
 # database ----
 apt-get update \
-    apt-get install -y --no-install-recommends \
-  default-mysql-client \
-  default-libmysqlclient-dev
+  && apt-get install -y --no-install-recommends \
+    default-mysql-client \
+    default-libmysqlclient-dev
 
 # Divers
 apt-get install -y r-cran-rjava cron nano
@@ -67,14 +84,21 @@ mv /etc/localtime /etc/localtime_backup \
 
 apt-get update
 
-# TODO these libs are here
-# as they were historically installed for Chrome,
-# but I'm not sure if they are needed anymore, can we remove them?
-apt-get -y install libxpm4 \
+# Outils requis pour télécharger Chrome (curl) et configurer le repo Node (gnupg).
+# DOIT être avant la section Chrome — l'ordre inverse d'origine cassait tout.
+apt-get install -y --no-install-recommends \
+    curl \
+    gnupg \
+    ca-certificates
+
+# Libs historiquement installées pour Chrome.
+# libgconf-2-4 retiré (n'existe plus depuis Ubuntu 22.04).
+# Les vraies deps de Chrome sont de toute façon résolues par apt via le .deb.
+apt-get -y install \
+    libxpm4 \
     libxrender1 \
     libgtk2.0-0 \
     libnss3 \
-    libgconf-2-4 \
     xvfb \
     gtk2-engines-pixbuf \
     xfonts-cyrillic \
@@ -83,12 +107,14 @@ apt-get -y install libxpm4 \
     xfonts-base \
     xfonts-scalable
 
-curl -LO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+curl -fLO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 apt-get install -y ./google-chrome-stable_current_amd64.deb
 rm google-chrome-stable_current_amd64.deb
 
 # NodeJS
-
-apt-get -y install curl gnupg && \
-    curl -sL https://deb.nodesource.com/setup_14.x   | bash - && \
-    apt-get -y --allow-unauthenticated install nodejs
+# Note: setup_14.x est EOL côté NodeSource depuis avril 2023. Le script ne
+# configure plus le repo, il affiche un avis de migration et exit 0. Du coup
+# `apt-get install nodejs` installe le Node packagé par Ubuntu (18.x sur noble).
+# À migrer vers setup_lts.x / setup_20.x quand l'occasion se présente.
+curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
+apt-get -y --allow-unauthenticated install nodejs
