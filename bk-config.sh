@@ -1,18 +1,5 @@
 #!/bin/bash
 # bk-config.sh — installation des dépendances système (R/spatial/Chrome/Node)
-#
-# Modifications par rapport à la version d'origine :
-#   - set -euo pipefail + trap ERR : tout échec de commande coupe le build
-#     proprement, plus rien ne passe en silence.
-#   - curl + gnupg installés AVANT la section Chrome (l'inversion d'ordre
-#     d'origine empêchait le téléchargement du .deb).
-#   - libgconf-2-4 retiré : paquet supprimé depuis Ubuntu 22.04
-#     (gconf déprécié, plus présent sur noble 24.04).
-#   - bloc "database" : "&&" rétabli entre `apt-get update` et `apt-get install`
-#     (le backslash isolé d'origine collait les deux commandes en une seule
-#     et l'install MySQL n'était jamais exécuté silencieusement).
-#   - curl -fLO / -fsSL : `-f` fait échouer curl sur HTTP 4xx/5xx au lieu
-#     d'enregistrer la page d'erreur HTML sous le nom attendu.
 
 set -euo pipefail
 trap 'echo "ERROR: bk-config.sh a échoué à la ligne $LINENO" >&2' ERR
