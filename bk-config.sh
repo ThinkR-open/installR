@@ -79,11 +79,10 @@ mv /etc/localtime /etc/localtime_backup \
 
 apt-get update
 
-# Outils requis pour télécharger Chrome (curl) et configurer le repo Node (gnupg).
+# Outils requis pour télécharger Chrome.
 # DOIT être avant la section Chrome — l'ordre inverse d'origine cassait tout.
 apt-get install -y --no-install-recommends \
     curl \
-    gnupg \
     ca-certificates
 
 # Libs historiquement installées pour Chrome.
