@@ -1,6 +1,14 @@
 #!/bin/bash
 # bk-config.sh — installation des dépendances système (R/spatial/Chrome/Node)
 
+if [ -z "${BASH_VERSION:-}" ]; then
+  if command -v bash >/dev/null 2>&1; then
+    exec bash "$0" "$@"
+  fi
+  echo "ERROR: bk-config.sh doit être exécuté avec bash" >&2
+  exit 1
+fi
+
 set -euo pipefail
 trap 'echo "ERROR: bk-config.sh a échoué à la ligne $LINENO" >&2' ERR
 
