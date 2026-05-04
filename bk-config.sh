@@ -12,9 +12,12 @@ fi
 set -euo pipefail
 trap 'echo "ERROR: bk-config.sh a échoué à la ligne $LINENO" >&2' ERR
 
+# Make apt a bit more resilient in CI/container networking
+APT_GET="apt-get -o Acquire::Retries=5 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30"
+
 # Spatial stuff
-apt-get update \
-  && apt-get install -y --no-install-recommends \
+$APT_GET update \
+  && $APT_GET install -y --no-install-recommends \
     lbzip2 \
     libfftw3-dev \
     libgdal-dev \
@@ -47,7 +50,7 @@ apt-get update \
     imagemagick \
     libsecret-1-dev
 
-apt-get install -y \
+$APT_GET install -y \
     libmagick++-dev \
     libjq-dev  \
     libv8-dev  \
@@ -59,17 +62,17 @@ apt-get install -y \
     xclip
 
 # database ----
-apt-get update \
-  && apt-get install -y --no-install-recommends \
+$APT_GET update \
+  && $APT_GET install -y --no-install-recommends \
     default-mysql-client \
     default-libmysqlclient-dev
 
 # Divers
-apt-get install -y r-cran-rjava cron nano
+$APT_GET install -y r-cran-rjava cron nano
 
 # Locals
-apt-get install -y tzdata
-apt-get install -y language-pack-fr
+$APT_GET install -y tzdata
+$APT_GET install -y language-pack-fr
 mv /etc/localtime /etc/localtime_backup \
   && ln -fs /usr/share/zoneinfo/Europe/Paris /etc/localtime \
   && dpkg-reconfigure -f noninteractive tzdata
@@ -77,18 +80,18 @@ mv /etc/localtime /etc/localtime_backup \
 
 # Chromium for {pagedown} ----
 
-apt-get update
+$APT_GET update
 
 # Outils requis pour télécharger Chrome.
 # DOIT être avant la section Chrome — l'ordre inverse d'origine cassait tout.
-apt-get install -y --no-install-recommends \
+$APT_GET install -y --no-install-recommends \
     curl \
     ca-certificates
 
 # Libs historiquement installées pour Chrome.
 # libgconf-2-4 retiré (n'existe plus depuis Ubuntu 22.04).
 # Les vraies deps de Chrome sont de toute façon résolues par apt via le .deb.
-apt-get -y install \
+$APT_GET -y install \
     libxpm4 \
     libxrender1 \
     libgtk2.0-0 \
@@ -102,10 +105,10 @@ apt-get -y install \
     xfonts-scalable
 
 curl -fSLO --retry 3 --retry-connrefused https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-apt-get install -y ./google-chrome-stable_current_amd64.deb
+$APT_GET install -y ./google-chrome-stable_current_amd64.deb
 rm google-chrome-stable_current_amd64.deb
 
 # NodeJS
 # Installer directement le paquet NodeJS fourni par l'OS pour éviter
 # l'exécution d'un script distant NodeSource EOL pendant le build.
-apt-get -y install nodejs
+$APT_GET -y install nodejs
