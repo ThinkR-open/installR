@@ -7,6 +7,7 @@ remotes::install_cran("progress")
 remotes::install_cran("cli")
 remotes::install_version("attempt", "0.3.0")
 
+# Packages that are available on CRAN
 to_install <- unique(
   sort(
     c(
@@ -142,8 +143,7 @@ to_install <- unique(
       "utils", 
       "vroom", 
       "writexl",
-      "xaringan", 
-      "xaringanExtra",
+      "xaringan",
       "XLConnect",
       "XLConnectJars", 
       "xtable", 
@@ -160,10 +160,10 @@ success <- c()
 withr::with_options(
   c(repos =  "https://cran.rstudio.com"), {
     cli::cat_rule("Starting packages installation")
-    
+
     library(progress)
     pb <- progress_bar$new(total = length(to_install))
-    
+
     for (i in seq_along(to_install)){
       pb$tick()
       cli::cat_line()
@@ -174,7 +174,7 @@ withr::with_options(
           pak
         ), bullet = "play"
       )
-      
+
       tst <- attempt::attempt({
         remotes::install_cran(
           pak, 
@@ -200,24 +200,34 @@ withr::with_options(
         success <- c(success, pak)
       }
     }
-    
+
   }
 )
 
 cli::cat_rule("Ended CRAN Installation. Starting GitHub Installation.")
 
+# GitHub-only packages (these are not on CRAN or not reliably available there)
+# - bsicons is rstudio/bsicons (not JohnCoene/bsicons)
+# - checkhelper is ThinkR-open/checkhelper
+# - gtExtras is jthomasmock/gtExtras
+# - xaringanExtra is gadenbuie/xaringanExtra
+
 to_install <- c(
   "ThinkR-open/prenoms", 
-  "ThinkR-open/shopping"
+  "ThinkR-open/shopping",
+  "rstudio/bsicons",
+  "ThinkR-open/checkhelper",
+  "jthomasmock/gtExtras",
+  "gadenbuie/xaringanExtra"
 )
 
 withr::with_options(
   c(repos =  "https://cran.rstudio.com"), {
     cli::cat_rule("Starting packages installation")
-    
+
     library(progress)
     pb <- progress_bar$new(total = length(to_install))
-    
+
     for (i in seq_along(to_install)){
       cli::cat_line()
       pb$tick()
@@ -229,7 +239,7 @@ withr::with_options(
         ), 
         bullet = "play"
       )
-      
+
       tst <- attempt::attempt({
         remotes::install_github(
           pak,
@@ -254,9 +264,9 @@ withr::with_options(
         )
         success <- c(success, pak)
       }
-      
+
     }
-    
+
   }
 )
 
