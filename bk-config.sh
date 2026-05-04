@@ -107,9 +107,6 @@ apt-get install -y ./google-chrome-stable_current_amd64.deb
 rm google-chrome-stable_current_amd64.deb
 
 # NodeJS
-# Note: setup_14.x est EOL côté NodeSource depuis avril 2023. Le script ne
-# configure plus le repo, il affiche un avis de migration et exit 0. Du coup
-# `apt-get install nodejs` installe le Node packagé par Ubuntu (18.x sur noble).
-# À migrer vers setup_lts.x / setup_20.x quand l'occasion se présente.
-curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
-apt-get -y --allow-unauthenticated install nodejs
+# Installer directement le paquet NodeJS fourni par l'OS pour éviter
+# l'exécution d'un script distant NodeSource EOL pendant le build.
+apt-get -y install nodejs
