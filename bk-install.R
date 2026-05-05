@@ -431,6 +431,9 @@ install.packages(
   repos = "http://cran.rstudio.com",
   type = "source"
 )
+if (!"keyring" %in% as.data.frame(installed.packages())$Package) {
+  failed <- c(failed, "keyring (forced from source)")
+}
 
 cli::cat_line()
 cli::cat_rule("The following package(s) are installed:")
@@ -438,6 +441,18 @@ cli::cat_bullet(success, bullet = "tick")
 cli::cat_line()
 cli::cat_rule("The following package(s) failed to install:")
 cli::cat_bullet(failed, bullet = "cross")
+
+# Hard fail if anything is missing — we don't want to ship an incomplete image
+# silently. PhantomJS and tinytex below are skipped when this fires.
+if (length(failed) > 0) {
+  stop(
+    sprintf(
+      "Aborting: %d package(s) failed to install: %s",
+      length(failed),
+      paste(failed, collapse = ", ")
+    )
+  )
+}
 
 cli::cat_rule("Installing PhantomJS (via webshot)")
 webshot::install_phantomjs()
