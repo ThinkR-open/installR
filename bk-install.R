@@ -56,6 +56,7 @@ cran_pkgs <- c(
   "bslib",
   "bookdown",
   "broom",
+  "bsicons",
   "car",
   "cartography",
   "ceramic",
@@ -117,6 +118,7 @@ cran_pkgs <- c(
   "gstat",
   "gt",
   "gtable",
+  "gtExtras",
   "h2o",
   "haven",
   "here",
@@ -182,6 +184,7 @@ cran_pkgs <- c(
   "readxl",
   "remedy",
   "remotes",
+  "renv",
   "reprex",
   "reshape",
   "reshape2",
@@ -238,6 +241,7 @@ cran_pkgs <- c(
   "webshot",
   "writexl",
   "xaringan",
+  "xaringanExtra",
   "xtable",
   "xts",
   "zoo"
@@ -245,19 +249,27 @@ cran_pkgs <- c(
 
 # GitHub-only packages (those not on CRAN, or where we want a specific fork)
 gh_pkgs <- c(
-  "rstudio/bsicons",
-  "ThinkR-open/checkhelper",
-  "ColinFay/rfeel",
   "ThinkR-open/cranology",
   "hadley/emo",
-  "jthomasmock/gtExtras",
-  "ThinkR-open/inca3",
   "ropensci/rnaturalearthhires",
-  "rstudio/renv",
   "statnmap/cartomisc",
   "ThinkR-open/prenoms",
-  "ThinkR-open/shopping",
-  "gadenbuie/xaringanExtra"
+  "ThinkR-open/shopping"
+)
+
+# R-Universe packages
+runiv_pkgs <- list(
+  list(
+    name = "inca3",
+    repos = c(
+      "https://thinkr-open.r-universe.dev",
+      "https://cloud.r-project.org"
+    )
+  ),
+  list(
+    name = "checkhelper",
+    repos = "https://thinkr-open.r-universe.dev"
+  )
 )
 
 pkg_name <- function(x) {
@@ -305,6 +317,26 @@ cli::cat_bullet(
   "Bulk CRAN install completed",
   bullet = "tick"
 )
+
+cli::cat_rule("R-Universe packages")
+
+for (p in runiv_pkgs) {
+  cli::cat_bullet(
+    sprintf("Installing %s", p$name),
+    bullet = "play"
+  )
+  res <- attempt::attempt({
+    install.packages(p$name, repos = p$repos)
+  })
+  if (
+    attempt::is_try_error(res) ||
+      !(p$name %in% as.data.frame(installed.packages())$Package)
+  ) {
+    cli::cat_bullet(sprintf("Failed: %s", p$name), bullet = "cross")
+  } else {
+    cli::cat_bullet(sprintf("OK: %s", p$name), bullet = "tick")
+  }
+}
 
 cli::cat_rule("GitHub packages (one by one for resilience)")
 
@@ -364,9 +396,24 @@ for (pkg in gh_pkgs) {
   }
 }
 
+
 # Reconcile: which packages from the full request list ended up installed?
-all_requested <- c(cran_pkgs, gh_pkgs)
-final_installed <- as.data.frame(installed.packages())$Package
+runiv_names <- vapply(
+  runiv_pkgs,
+  function(p) p$name,
+  character(1)
+)
+
+all_requested <- c(
+  cran_pkgs,
+  runiv_names,
+  gh_pkgs
+)
+
+final_installed <- as.data.frame(
+  installed.packages()
+)$Package
+
 success <- all_requested[
   vapply(
     all_requested,
@@ -435,13 +482,20 @@ cli::cat_rule("Installing tinytex")
 tinytex_installed <- FALSE
 
 # tinytex's default repo (tlnet.yihui.org) intermittently serves HTML
-# instead of the tlpdb file, which corrupts the install. Force the
-# canonical CTAN mirror up-front.
-options(tinytex.tlmgr.repo = "https://mirror.ctan.org/systems/texlive/tlnet")
+# instead of the tlpdb file, which corrupts the install. `repository`
+# is honored by install_tinytex() itself; the option only affects
+# post-install tlmgr calls — both must be set to fully bypass yihui.
+tlmgr_repo <- "https://mirror.ctan.org/systems/texlive/tlnet"
+options(
+  tinytex.tlmgr.repo = tlmgr_repo
+)
 
 # 1) daily (default — fastest when it works, but can 404)
 res <- attempt::attempt({
-  tinytex::install_tinytex(force = TRUE)
+  tinytex::install_tinytex(
+    force = TRUE,
+    repository = tlmgr_repo
+  )
 })
 if (!attempt::is_try_error(res)) {
   tinytex_installed <- TRUE
@@ -455,7 +509,11 @@ if (!attempt::is_try_error(res)) {
 # 2) latest
 if (!tinytex_installed) {
   res <- attempt::attempt({
-    tinytex::install_tinytex(force = TRUE, version = "latest")
+    tinytex::install_tinytex(
+      force = TRUE,
+      version = "latest",
+      repository = tlmgr_repo
+    )
   })
   if (!attempt::is_try_error(res)) {
     tinytex_installed <- TRUE
@@ -470,7 +528,11 @@ if (!tinytex_installed) {
 # 3) pinned fallback
 if (!tinytex_installed) {
   res <- attempt::attempt({
-    tinytex::install_tinytex(force = TRUE, version = "v2026.05")
+    tinytex::install_tinytex(
+      force = TRUE,
+      version = "v2026.05",
+      repository = tlmgr_repo
+    )
   })
   if (!attempt::is_try_error(res)) {
     tinytex_installed <- TRUE
@@ -484,4 +546,5 @@ if (tinytex_installed) {
     "tinytex install failed (all fallbacks exhausted)",
     bullet = "cross"
   )
+  stop("tinytex install failed (all fallbacks exhausted)")
 }
