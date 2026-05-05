@@ -7,13 +7,18 @@ options(
 # checks across the install run.
 Sys.setenv(PKG_SYSREQS = "false")
 
-# Forward GitHub Actions token to GITHUB_PAT so pak/remotes use authenticated
+# Forward CI tokens to GITHUB_PAT so pak/remotes use authenticated
 # requests (60 → 5000 req/hr). Without this, the GH installs hit the
-# unauthenticated rate limit after a couple of packages.
+# unauthenticated rate limit after a couple of packages. Supports
+# GitHub Actions (GITHUB_TOKEN) and GitLab CI (GITLAB_GITHUB_TOKEN /
+# CI_GITHUB_TOKEN — pick whichever your CI sets).
 if (Sys.getenv("GITHUB_PAT") == "") {
-  gh_token <- Sys.getenv("GITHUB_TOKEN")
-  if (nzchar(gh_token)) {
-    Sys.setenv(GITHUB_PAT = gh_token)
+  for (var in c("GITHUB_TOKEN", "GITLAB_GITHUB_TOKEN", "CI_GITHUB_TOKEN")) {
+    tok <- Sys.getenv(var)
+    if (nzchar(tok)) {
+      Sys.setenv(GITHUB_PAT = tok)
+      break
+    }
   }
 }
 
@@ -275,12 +280,31 @@ if (attempt::is_try_error(cran_ok)) {
     bullet = "cross"
   )
   stop("Bulk CRAN install failed; not all packages were installed.")
-} else {
-  cli::cat_bullet(
-    "Bulk CRAN install completed",
-    bullet = "tick"
-  )
 }
+
+# pak::pkg_install can return success even when individual packages were
+# skipped due to "dependency conflict" (typically base-recommended pkgs
+# pinned by the running R session: MASS, lattice, cluster, ...). Check
+# the actual installed set and abort if anything is missing — otherwise
+# the build silently ships an incomplete image.
+post_install <- as.data.frame(installed.packages())$Package
+cran_missing <- setdiff(cran_pkgs, post_install)
+if (length(cran_missing) > 0) {
+  cli::cat_bullet(
+    sprintf(
+      "Bulk CRAN install left %d package(s) uninstalled: %s",
+      length(cran_missing),
+      paste(cran_missing, collapse = ", ")
+    ),
+    bullet = "cross"
+  )
+  stop("Bulk CRAN install incomplete; aborting.")
+}
+
+cli::cat_bullet(
+  "Bulk CRAN install completed",
+  bullet = "tick"
+)
 
 cli::cat_rule("GitHub packages (one by one for resilience)")
 
@@ -295,21 +319,48 @@ for (pkg in gh_pkgs) {
 
   installed <- as.data.frame(installed.packages())$Package
   if (pkg_name(pkg) %in% installed) {
-    cli::cat_rule(sprintf("%s is already installed, skipping", pkg))
+    cli::cat_rule(
+      sprintf(
+        "%s is already installed, skipping",
+        pkg
+      )
+    )
     next()
   }
 
-  cli::cat_bullet(sprintf("Installing %s", pkg), bullet = "play")
+  cli::cat_bullet(
+    sprintf(
+      "Installing %s",
+      pkg
+    ),
+    bullet = "play"
+  )
 
   res <- attempt::attempt({
-    pak::pak(pkg, upgrade = FALSE, ask = FALSE)
+    pak::pak(
+      pkg,
+      upgrade = FALSE,
+      ask = FALSE
+    )
   })
 
   if (attempt::is_try_error(res)) {
-    cli::cat_bullet(sprintf("Failed: %s", pkg), bullet = "cross")
-    gh_failed <- c(gh_failed, pkg)
+    cli::cat_bullet(
+      sprintf("Failed: %s", pkg),
+      bullet = "cross"
+    )
+    gh_failed <- c(
+      gh_failed,
+      pkg
+    )
   } else {
-    cli::cat_bullet(sprintf("OK: %s", pkg), bullet = "tick")
+    cli::cat_bullet(
+      sprintf(
+        "OK: %s",
+        pkg
+      ),
+      bullet = "tick"
+    )
   }
 }
 
@@ -382,6 +433,11 @@ cli::cat_bullet("PhantomJS installed", bullet = "tick")
 cli::cat_rule("Installing tinytex")
 
 tinytex_installed <- FALSE
+
+# tinytex's default repo (tlnet.yihui.org) intermittently serves HTML
+# instead of the tlpdb file, which corrupts the install. Force the
+# canonical CTAN mirror up-front.
+options(tinytex.tlmgr.repo = "https://mirror.ctan.org/systems/texlive/tlnet")
 
 # 1) daily (default — fastest when it works, but can 404)
 res <- attempt::attempt({
