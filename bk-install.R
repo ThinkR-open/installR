@@ -7,6 +7,16 @@ options(
 # checks across the install run.
 Sys.setenv(PKG_SYSREQS = "false")
 
+# Forward GitHub Actions token to GITHUB_PAT so pak/remotes use authenticated
+# requests (60 → 5000 req/hr). Without this, the GH installs hit the
+# unauthenticated rate limit after a couple of packages.
+if (Sys.getenv("GITHUB_PAT") == "") {
+  gh_token <- Sys.getenv("GITHUB_TOKEN")
+  if (nzchar(gh_token)) {
+    Sys.setenv(GITHUB_PAT = gh_token)
+  }
+}
+
 # Install a recent pak from r-lib's distribution server. The CRAN
 # snapshot pinned in this image (2022-03-09) only ships pak 0.2.1,
 # which doesn't pick up Posit Package Manager binaries on Linux and
@@ -71,7 +81,6 @@ cran_pkgs <- c(
   "FactoMineR",
   "fcuk",
   "flextable",
-  "flux",
   "forecast",
   "foreign",
   "formatR",
@@ -156,7 +165,6 @@ cran_pkgs <- c(
   "prettydoc",
   "proto",
   "proustr",
-  "pryr",
   "quarto",
   "R6",
   "randomForest",
@@ -263,9 +271,10 @@ cran_ok <- attempt::attempt({
 
 if (attempt::is_try_error(cran_ok)) {
   cli::cat_bullet(
-    "Bulk CRAN install errored — some packages may be missing",
+    "Bulk CRAN install errored — aborting",
     bullet = "cross"
   )
+  stop("Bulk CRAN install failed; not all packages were installed.")
 } else {
   cli::cat_bullet(
     "Bulk CRAN install completed",
@@ -321,7 +330,9 @@ cli::cat_rule("Installation phase ended")
 # tutor: forced reinstall to guarantee a known learnr version pairing
 cli::cat_rule("Installing thinkr-open/tutor")
 
-remove.packages("learnr")
+if ("learnr" %in% as.data.frame(installed.packages())$Package) {
+  remove.packages("learnr")
+}
 
 tutor_ok <- attempt::attempt({
   remotes::install_github(
