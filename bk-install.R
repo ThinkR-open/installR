@@ -247,29 +247,19 @@ cran_pkgs <- c(
   "zoo"
 )
 
-# GitHub-only packages (those not on CRAN, or where we want a specific fork)
+# GitHub-only packages (those not on CRAN, or where we want a specific fork).
+# inca3 and checkhelper used to be installed from R-Universe; merged here so
+# everything off-CRAN goes through the same remotes::install_github path —
+# avoids pak subprocess CA-bundle issues and keeps one resilient code path.
 gh_pkgs <- c(
   "ThinkR-open/cranology",
   "hadley/emo",
   "ropensci/rnaturalearthhires",
   "statnmap/cartomisc",
   "ThinkR-open/prenoms",
-  "ThinkR-open/shopping"
-)
-
-# R-Universe packages
-runiv_pkgs <- list(
-  list(
-    name = "inca3",
-    repos = c(
-      "https://thinkr-open.r-universe.dev",
-      "https://cloud.r-project.org"
-    )
-  ),
-  list(
-    name = "checkhelper",
-    repos = "https://thinkr-open.r-universe.dev"
-  )
+  "ThinkR-open/shopping",
+  "ThinkR-open/inca3",
+  "ThinkR-open/checkhelper"
 )
 
 pkg_name <- function(x) {
@@ -317,33 +307,6 @@ cli::cat_bullet(
   "Bulk CRAN install completed",
   bullet = "tick"
 )
-
-cli::cat_rule("R-Universe packages")
-
-# pak resolves R-Universe correctly when the repo is in `options(repos = …)`,
-# whereas `install.packages()` on R-Universe URLs intermittently downloads a
-# 0-byte body (server returns a redirect/HTML stub instead of the binary on
-# this R/OS combo).
-for (p in runiv_pkgs) {
-  cli::cat_bullet(
-    sprintf("Installing %s", p$name),
-    bullet = "play"
-  )
-  old_repos <- getOption("repos")
-  options(repos = c(p$repos, old_repos))
-  res <- attempt::attempt({
-    pak::pkg_install(p$name, upgrade = FALSE, ask = FALSE)
-  })
-  options(repos = old_repos)
-  if (
-    attempt::is_try_error(res) ||
-      !(p$name %in% as.data.frame(installed.packages())$Package)
-  ) {
-    cli::cat_bullet(sprintf("Failed: %s", p$name), bullet = "cross")
-  } else {
-    cli::cat_bullet(sprintf("OK: %s", p$name), bullet = "tick")
-  }
-}
 
 cli::cat_rule("GitHub packages (one by one for resilience)")
 
@@ -411,15 +374,8 @@ for (pkg in gh_pkgs) {
 
 
 # Reconcile: which packages from the full request list ended up installed?
-runiv_names <- vapply(
-  runiv_pkgs,
-  function(p) p$name,
-  character(1)
-)
-
 all_requested <- c(
   cran_pkgs,
-  runiv_names,
   gh_pkgs
 )
 
