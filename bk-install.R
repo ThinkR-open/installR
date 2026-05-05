@@ -2,48 +2,66 @@ options(
   Ncpus = 6
 )
 
-update.packages(ask = FALSE)
+# Skip sysreqs: the Dockerfile (bk-config.sh) already installs the
+# system libraries we need. This avoids ~50 redundant `apt-get install`
+# checks across the install run.
+Sys.setenv(PKG_SYSREQS = "false")
 
-install.packages("pak")
-
-if (!requireNamespace("progress", quietly = TRUE)) {
-  pak::pkg_install("progress")
-}
-if (!requireNamespace("cli", quietly = TRUE)) {
-  pak::pkg_install("cli")
-}
-if (!requireNamespace("attempt", quietly = TRUE)) {
-  pak::pkg_install("attempt")
+# Forward GitHub Actions token to GITHUB_PAT so pak/remotes use authenticated
+# requests (60 → 5000 req/hr). Without this, the GH installs hit the
+# unauthenticated rate limit after a couple of packages.
+if (Sys.getenv("GITHUB_PAT") == "") {
+  gh_token <- Sys.getenv("GITHUB_TOKEN")
+  if (nzchar(gh_token)) {
+    Sys.setenv(GITHUB_PAT = gh_token)
+  }
 }
 
-to_install <- unique(
-  sort(
-c(
+# Install a recent pak from r-lib's distribution server. The CRAN
+# snapshot pinned in this image (2022-03-09) only ships pak 0.2.1,
+# which doesn't pick up Posit Package Manager binaries on Linux and
+# ends up compiling everything from source. A modern pak transparently
+# fetches pre-compiled binaries from PPM, cutting many minutes off
+# the build.
+install.packages(
+  "pak",
+  repos = sprintf(
+    "https://r-lib.github.io/p/pak/stable/%s/%s/%s",
+    .Platform$pkgType,
+    R.Version()$os,
+    R.Version()$arch
+  )
+)
+
+# Bootstrap helper packages used by this script
+for (p in c("progress", "cli", "attempt")) {
+  if (!requireNamespace(p, quietly = TRUE)) {
+    pak::pkg_install(p, ask = FALSE)
+  }
+}
+
+# CRAN packages: one pak call, parallel resolution + download
+cran_pkgs <- c(
   "abind",
   "arsenal",
   "attachment",
   "attempt",
   "bbmle",
   "bit64",
-  "bsicons",
   "bslib",
   "bookdown",
   "broom",
   "car",
   "cartography",
   "ceramic",
-  "checkhelper",
   "chron",
   "class",
   "cluster",
-  "ColinFay/rfeel",
   "colorspace",
   "colourpicker",
-  "compiler",
   "covr",
   "cowplot",
   "cowsay",
-  "ThinkR-open/cranology",
   "data.table",
   "DBI",
   "devEMF",
@@ -56,7 +74,6 @@ c(
   "dygraphs",
   "e1071",
   "ellipse",
-  "hadley/emo",
   "emojifont",
   "evaluate",
   "explor",
@@ -64,7 +81,6 @@ c(
   "FactoMineR",
   "fcuk",
   "flextable",
-  "flux",
   "forecast",
   "foreign",
   "formatR",
@@ -93,15 +109,10 @@ c(
   "gitlabr",
   "golem",
   "gplots",
-  "graphics",
-  "grDevices",
-  "grid",
   "gstat",
   "gt",
   "gtable",
-  "gtExtras",
   "h2o",
-  "hadley/emo",
   "haven",
   "here",
   "hflights",
@@ -110,7 +121,6 @@ c(
   "htmltools",
   "httr",
   "icarus",
-  "ThinkR-open/inca3",
   "interp",
   "jpeg",
   "kableExtra",
@@ -132,7 +142,6 @@ c(
   "mapview",
   "markdown",
   "MASS",
-  "methods",
   "microbenchmark",
   "mime",
   "mongolite",
@@ -156,7 +165,6 @@ c(
   "prettydoc",
   "proto",
   "proustr",
-  "pryr",
   "quarto",
   "R6",
   "randomForest",
@@ -180,11 +188,9 @@ c(
   "rmdformats",
   "rnaturalearth",
   "rnaturalearthdata",
-  "ropensci/rnaturalearthhires",
   "rosm",
   "roxygen2",
   "rpart",
-  "rstudio/renv",
   "rvest",
   "sandwich",
   "sas7bdat",
@@ -201,127 +207,134 @@ c(
   "skimr",
   "sp",
   "spelling",
-  "splines",
   "sqldf",
   "stars",
-  "statnmap/cartomisc",
-  "stats",
-  "stringr",
   "styler",
   "survival",
   "targets",
-  "tcltk",
   "tcltk2",
   "terra",
   "thematic",
   "thinkr",
-  "ThinkR-open/inca3",
-  "ThinkR-open/prenoms",
-  "ThinkR-open/shopping",
   "tidystringdist",
   "tidytext",
   "tidyverse",
   "tinytex",
   "tmap",
   "togglr",
-  "tools",
   "topicmodels",
   "transformr",
   "tseries",
   "units",
   "usethis",
-  "utils",
   "V8",
   "visdat",
   "vroom",
   "webshot",
   "writexl",
   "xaringan",
-  "xaringanExtra",
   "xtable",
   "xts",
   "zoo"
 )
-  )
+
+# GitHub-only packages (those not on CRAN, or where we want a specific fork)
+gh_pkgs <- c(
+  "rstudio/bsicons",
+  "ThinkR-open/checkhelper",
+  "ColinFay/rfeel",
+  "ThinkR-open/cranology",
+  "hadley/emo",
+  "jthomasmock/gtExtras",
+  "ThinkR-open/inca3",
+  "ropensci/rnaturalearthhires",
+  "rstudio/renv",
+  "statnmap/cartomisc",
+  "ThinkR-open/prenoms",
+  "ThinkR-open/shopping",
+  "gadenbuie/xaringanExtra"
 )
 
-failed <- c()
-success <- c()
+pkg_name <- function(x) {
+  if (grepl("/", x)) sub("^.*/", "", x) else x
+}
 
-cli::cat_rule("Starting packages installation")
+cli::cat_rule("Bulk CRAN install (single pak call)")
+
+cran_ok <- attempt::attempt({
+  pak::pkg_install(
+    cran_pkgs,
+    upgrade = FALSE,
+    ask = FALSE
+  )
+})
+
+if (attempt::is_try_error(cran_ok)) {
+  cli::cat_bullet(
+    "Bulk CRAN install errored — aborting",
+    bullet = "cross"
+  )
+  stop("Bulk CRAN install failed; not all packages were installed.")
+} else {
+  cli::cat_bullet(
+    "Bulk CRAN install completed",
+    bullet = "tick"
+  )
+}
+
+cli::cat_rule("GitHub packages (one by one for resilience)")
+
+gh_failed <- c()
 
 library(progress)
-pb <- progress_bar$new(
-  total = length(to_install)
-)
+pb <- progress_bar$new(total = length(gh_pkgs))
 
-for (i in seq_along(to_install)) {
-
-  packs <- as.data.frame(installed.packages())
-
+for (pkg in gh_pkgs) {
   pb$tick()
-
   cli::cat_line()
 
-  pak <- to_install[i]
-
-  if (pak %in% packs$Package) {
-    cli::cat_rule(
-      sprintf(
-        "%s is already installed, skipping",
-        pak
-      )
-    )
+  installed <- as.data.frame(installed.packages())$Package
+  if (pkg_name(pkg) %in% installed) {
+    cli::cat_rule(sprintf("%s is already installed, skipping", pkg))
     next()
   }
 
-  cli::cat_bullet(
-    sprintf(
-      "Starting %s installation",
-      pak
-    ),
-    bullet = "play"
-  )
+  cli::cat_bullet(sprintf("Installing %s", pkg), bullet = "play")
 
-  tst <- attempt::attempt({
-    pak::pak(
-      pak,
-      upgrade = FALSE
-    )
+  res <- attempt::attempt({
+    pak::pak(pkg, upgrade = FALSE, ask = FALSE)
   })
 
-  if (attempt::is_try_error(tst)) {
-    cli::cat_bullet(
-      sprintf(
-        "Error installing %s",
-        pak
-      ),
-      bullet = "cross"
-    )
-    failed <- c(
-      failed,
-      pak
-    )
+  if (attempt::is_try_error(res)) {
+    cli::cat_bullet(sprintf("Failed: %s", pkg), bullet = "cross")
+    gh_failed <- c(gh_failed, pkg)
   } else {
-    cli::cat_bullet(
-      sprintf(
-        "%s installed",
-        pak
-      ),
-      bullet = "tick"
-    )
-    success <- c(success, pak)
+    cli::cat_bullet(sprintf("OK: %s", pkg), bullet = "tick")
   }
 }
 
-cli::cat_rule("Installation ended.")
+# Reconcile: which packages from the full request list ended up installed?
+all_requested <- c(cran_pkgs, gh_pkgs)
+final_installed <- as.data.frame(installed.packages())$Package
+success <- all_requested[
+  vapply(
+    all_requested,
+    function(x) pkg_name(x) %in% final_installed,
+    logical(1)
+  )
+]
+failed <- setdiff(all_requested, success)
 
+cli::cat_rule("Installation phase ended")
 
-# LATEST thinkr-open/tutor
-# Just to be sure we have the correct version of {learnr}
-remove.packages("learnr")
+# tutor: forced reinstall to guarantee a known learnr version pairing
+cli::cat_rule("Installing thinkr-open/tutor")
 
-tst <- attempt::attempt({
+if ("learnr" %in% as.data.frame(installed.packages())$Package) {
+  remove.packages("learnr")
+}
+
+tutor_ok <- attempt::attempt({
   remotes::install_github(
     "thinkr-open/tutor",
     force = TRUE,
@@ -329,68 +342,90 @@ tst <- attempt::attempt({
   )
 })
 
-# Rve the tutorials from learnr so that we only use the ones
-# from {tutor}
+# Drop learnr's bundled tutorials so only tutor's are exposed
 unlink(
-  system.file(
-    "tutorials",
-    package = "learnr"
-  ),
-  TRUE,
-  TRUE
+  system.file("tutorials", package = "learnr"),
+  recursive = TRUE,
+  force = TRUE
 )
 
-if (attempt::is_try_error(tst)) {
-  cli::cat_bullet(
-    sprintf(
-      "Error installing %s",
-      "tutor"
-    ),
-    bullet = "cross"
-  )
-  failed <- c(
-    failed,
-    pak
-  )
+if (attempt::is_try_error(tutor_ok)) {
+  cli::cat_bullet("Failed: tutor", bullet = "cross")
+  failed <- c(failed, "tutor")
 } else {
-  cli::cat_bullet(
-    sprintf(
-      "%s installed",
-      "tutor"
-    ),
-    bullet = "tick"
-  )
-  success <- c(
-    success,
-    pak
-  )
+  cli::cat_bullet("OK: tutor", bullet = "tick")
+  success <- c(success, "tutor")
 }
-cli::cat_line()
-cli::cat_line()
-cli::cat_rule("force keyring installation from source")
-install.packages('keyring',repos='http://cran.rstudio.com')
 
+# keyring forced from source (needs libsecret bindings on this image)
+cli::cat_rule("Force-installing keyring from source")
+install.packages(
+  "keyring",
+  repos = "http://cran.rstudio.com",
+  type = "source"
+)
 
 cli::cat_line()
-cli::cat_line()
-cli::cat_rule("The following package(s) have been installed:")
+cli::cat_rule("The following package(s) are installed:")
 cli::cat_bullet(success, bullet = "tick")
 cli::cat_line()
 cli::cat_rule("The following package(s) failed to install:")
 cli::cat_bullet(failed, bullet = "cross")
 
-cli::cat_line()
-cli::cat_rule("Installing webshot")
+cli::cat_rule("Installing PhantomJS (via webshot)")
 webshot::install_phantomjs()
 system("cp ~/bin/phantomjs /usr/local/share/phantomjs")
 system("chmod 0755 /usr/local/share/phantomjs")
 system("ln -sf /usr/local/share/phantomjs /usr/local/bin")
 cli::cat_bullet("PhantomJS installed", bullet = "tick")
 
-cli::cat_line()
 cli::cat_rule("Installing tinytex")
-tinytex::install_tinytex(force = TRUE)
-cli::cat_bullet("tinytex installed", bullet = "tick")
 
+tinytex_installed <- FALSE
 
+# 1) daily (default — fastest when it works, but can 404)
+res <- attempt::attempt({
+  tinytex::install_tinytex(force = TRUE)
+})
+if (!attempt::is_try_error(res)) {
+  tinytex_installed <- TRUE
+} else {
+  cli::cat_bullet(
+    "tinytex daily install failed, trying latest",
+    bullet = "cross"
+  )
+}
 
+# 2) latest
+if (!tinytex_installed) {
+  res <- attempt::attempt({
+    tinytex::install_tinytex(force = TRUE, version = "latest")
+  })
+  if (!attempt::is_try_error(res)) {
+    tinytex_installed <- TRUE
+  } else {
+    cli::cat_bullet(
+      "tinytex latest install failed, trying pinned version",
+      bullet = "cross"
+    )
+  }
+}
+
+# 3) pinned fallback
+if (!tinytex_installed) {
+  res <- attempt::attempt({
+    tinytex::install_tinytex(force = TRUE, version = "v2026.05")
+  })
+  if (!attempt::is_try_error(res)) {
+    tinytex_installed <- TRUE
+  }
+}
+
+if (tinytex_installed) {
+  cli::cat_bullet("tinytex installed", bullet = "tick")
+} else {
+  cli::cat_bullet(
+    "tinytex install failed (all fallbacks exhausted)",
+    bullet = "cross"
+  )
+}
