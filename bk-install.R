@@ -7,13 +7,18 @@ options(
 # checks across the install run.
 Sys.setenv(PKG_SYSREQS = "false")
 
-# Forward GitHub Actions token to GITHUB_PAT so pak/remotes use authenticated
+# Forward CI tokens to GITHUB_PAT so pak/remotes use authenticated
 # requests (60 → 5000 req/hr). Without this, the GH installs hit the
-# unauthenticated rate limit after a couple of packages.
+# unauthenticated rate limit after a couple of packages. Supports
+# GitHub Actions (GITHUB_TOKEN) and GitLab CI (GITLAB_GITHUB_TOKEN /
+# CI_GITHUB_TOKEN — pick whichever your CI sets).
 if (Sys.getenv("GITHUB_PAT") == "") {
-  gh_token <- Sys.getenv("GITHUB_TOKEN")
-  if (nzchar(gh_token)) {
-    Sys.setenv(GITHUB_PAT = gh_token)
+  for (var in c("GITHUB_TOKEN", "GITLAB_GITHUB_TOKEN", "CI_GITHUB_TOKEN")) {
+    tok <- Sys.getenv(var)
+    if (nzchar(tok)) {
+      Sys.setenv(GITHUB_PAT = tok)
+      break
+    }
   }
 }
 
@@ -51,6 +56,7 @@ cran_pkgs <- c(
   "bslib",
   "bookdown",
   "broom",
+  "bsicons",
   "car",
   "cartography",
   "ceramic",
@@ -112,6 +118,7 @@ cran_pkgs <- c(
   "gstat",
   "gt",
   "gtable",
+  "gtExtras",
   "h2o",
   "haven",
   "here",
@@ -177,6 +184,7 @@ cran_pkgs <- c(
   "readxl",
   "remedy",
   "remotes",
+  "renv",
   "reprex",
   "reshape",
   "reshape2",
@@ -233,26 +241,25 @@ cran_pkgs <- c(
   "webshot",
   "writexl",
   "xaringan",
+  "xaringanExtra",
   "xtable",
   "xts",
   "zoo"
 )
 
-# GitHub-only packages (those not on CRAN, or where we want a specific fork)
+# GitHub-only packages (those not on CRAN, or where we want a specific fork).
+# inca3 and checkhelper used to be installed from R-Universe; merged here so
+# everything off-CRAN goes through the same remotes::install_github path —
+# avoids pak subprocess CA-bundle issues and keeps one resilient code path.
 gh_pkgs <- c(
-  "rstudio/bsicons",
-  "ThinkR-open/checkhelper",
-  "ColinFay/rfeel",
   "ThinkR-open/cranology",
   "hadley/emo",
-  "jthomasmock/gtExtras",
-  "ThinkR-open/inca3",
   "ropensci/rnaturalearthhires",
-  "rstudio/renv",
   "statnmap/cartomisc",
   "ThinkR-open/prenoms",
   "ThinkR-open/shopping",
-  "gadenbuie/xaringanExtra"
+  "ThinkR-open/inca3",
+  "ThinkR-open/checkhelper"
 )
 
 pkg_name <- function(x) {
@@ -275,15 +282,38 @@ if (attempt::is_try_error(cran_ok)) {
     bullet = "cross"
   )
   stop("Bulk CRAN install failed; not all packages were installed.")
-} else {
-  cli::cat_bullet(
-    "Bulk CRAN install completed",
-    bullet = "tick"
-  )
 }
+
+# pak::pkg_install can return success even when individual packages were
+# skipped due to "dependency conflict" (typically base-recommended pkgs
+# pinned by the running R session: MASS, lattice, cluster, ...). Check
+# the actual installed set and abort if anything is missing — otherwise
+# the build silently ships an incomplete image.
+post_install <- as.data.frame(installed.packages())$Package
+cran_missing <- setdiff(cran_pkgs, post_install)
+if (length(cran_missing) > 0) {
+  cli::cat_bullet(
+    sprintf(
+      "Bulk CRAN install left %d package(s) uninstalled: %s",
+      length(cran_missing),
+      paste(cran_missing, collapse = ", ")
+    ),
+    bullet = "cross"
+  )
+  stop("Bulk CRAN install incomplete; aborting.")
+}
+
+cli::cat_bullet(
+  "Bulk CRAN install completed",
+  bullet = "tick"
+)
 
 cli::cat_rule("GitHub packages (one by one for resilience)")
 
+# Use remotes::install_github rather than pak: pak runs in a subprocess that
+# does not always inherit GITHUB_PAT set via Sys.setenv() in the parent, which
+# triggers "Cannot query GitHub, are you offline?" failures even when the
+# token is present. remotes reads the env var directly in-process.
 gh_failed <- c()
 
 library(progress)
@@ -295,27 +325,64 @@ for (pkg in gh_pkgs) {
 
   installed <- as.data.frame(installed.packages())$Package
   if (pkg_name(pkg) %in% installed) {
-    cli::cat_rule(sprintf("%s is already installed, skipping", pkg))
+    cli::cat_rule(
+      sprintf(
+        "%s is already installed, skipping",
+        pkg
+      )
+    )
     next()
   }
 
-  cli::cat_bullet(sprintf("Installing %s", pkg), bullet = "play")
+  cli::cat_bullet(
+    sprintf(
+      "Installing %s",
+      pkg
+    ),
+    bullet = "play"
+  )
 
   res <- attempt::attempt({
-    pak::pak(pkg, upgrade = FALSE, ask = FALSE)
+    remotes::install_github(
+      pkg,
+      upgrade = "never"
+    )
   })
 
-  if (attempt::is_try_error(res)) {
-    cli::cat_bullet(sprintf("Failed: %s", pkg), bullet = "cross")
-    gh_failed <- c(gh_failed, pkg)
+  if (
+    attempt::is_try_error(res) ||
+      !(pkg_name(pkg) %in% as.data.frame(installed.packages())$Package)
+  ) {
+    cli::cat_bullet(
+      sprintf("Failed: %s", pkg),
+      bullet = "cross"
+    )
+    gh_failed <- c(
+      gh_failed,
+      pkg
+    )
   } else {
-    cli::cat_bullet(sprintf("OK: %s", pkg), bullet = "tick")
+    cli::cat_bullet(
+      sprintf(
+        "OK: %s",
+        pkg
+      ),
+      bullet = "tick"
+    )
   }
 }
 
+
 # Reconcile: which packages from the full request list ended up installed?
-all_requested <- c(cran_pkgs, gh_pkgs)
-final_installed <- as.data.frame(installed.packages())$Package
+all_requested <- c(
+  cran_pkgs,
+  gh_pkgs
+)
+
+final_installed <- as.data.frame(
+  installed.packages()
+)$Package
+
 success <- all_requested[
   vapply(
     all_requested,
@@ -364,6 +431,9 @@ install.packages(
   repos = "http://cran.rstudio.com",
   type = "source"
 )
+if (!"keyring" %in% as.data.frame(installed.packages())$Package) {
+  failed <- c(failed, "keyring (forced from source)")
+}
 
 cli::cat_line()
 cli::cat_rule("The following package(s) are installed:")
@@ -371,6 +441,18 @@ cli::cat_bullet(success, bullet = "tick")
 cli::cat_line()
 cli::cat_rule("The following package(s) failed to install:")
 cli::cat_bullet(failed, bullet = "cross")
+
+# Hard fail if anything is missing — we don't want to ship an incomplete image
+# silently. PhantomJS and tinytex below are skipped when this fires.
+if (length(failed) > 0) {
+  stop(
+    sprintf(
+      "Aborting: %d package(s) failed to install: %s",
+      length(failed),
+      paste(failed, collapse = ", ")
+    )
+  )
+}
 
 cli::cat_rule("Installing PhantomJS (via webshot)")
 webshot::install_phantomjs()
@@ -383,9 +465,21 @@ cli::cat_rule("Installing tinytex")
 
 tinytex_installed <- FALSE
 
+# tinytex's default repo (tlnet.yihui.org) intermittently serves HTML
+# instead of the tlpdb file, which corrupts the install. `repository`
+# is honored by install_tinytex() itself; the option only affects
+# post-install tlmgr calls — both must be set to fully bypass yihui.
+tlmgr_repo <- "https://mirror.ctan.org/systems/texlive/tlnet"
+options(
+  tinytex.tlmgr.repo = tlmgr_repo
+)
+
 # 1) daily (default — fastest when it works, but can 404)
 res <- attempt::attempt({
-  tinytex::install_tinytex(force = TRUE)
+  tinytex::install_tinytex(
+    force = TRUE,
+    repository = tlmgr_repo
+  )
 })
 if (!attempt::is_try_error(res)) {
   tinytex_installed <- TRUE
@@ -399,7 +493,11 @@ if (!attempt::is_try_error(res)) {
 # 2) latest
 if (!tinytex_installed) {
   res <- attempt::attempt({
-    tinytex::install_tinytex(force = TRUE, version = "latest")
+    tinytex::install_tinytex(
+      force = TRUE,
+      version = "latest",
+      repository = tlmgr_repo
+    )
   })
   if (!attempt::is_try_error(res)) {
     tinytex_installed <- TRUE
@@ -414,7 +512,11 @@ if (!tinytex_installed) {
 # 3) pinned fallback
 if (!tinytex_installed) {
   res <- attempt::attempt({
-    tinytex::install_tinytex(force = TRUE, version = "v2026.05")
+    tinytex::install_tinytex(
+      force = TRUE,
+      version = "v2026.05",
+      repository = tlmgr_repo
+    )
   })
   if (!attempt::is_try_error(res)) {
     tinytex_installed <- TRUE
@@ -428,4 +530,5 @@ if (tinytex_installed) {
     "tinytex install failed (all fallbacks exhausted)",
     bullet = "cross"
   )
+  stop("tinytex install failed (all fallbacks exhausted)")
 }

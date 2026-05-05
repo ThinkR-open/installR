@@ -94,11 +94,15 @@ APT_GET="apt-get -o Acquire::Retries=5 -o Acquire::http::Timeout=30 -o Acquire::
 $APT_GET update
 
 $APT_GET install -y --no-install-recommends \
+  cmake \
   cron \
   curl \
+  default-jdk \
   default-mysql-client \
   imagemagick \
   language-pack-fr \
+  libabsl-dev \
+  libglpk-dev \
   libmagick++-dev \
   libnode-dev \
   libsecret-1-dev \
@@ -107,6 +111,8 @@ $APT_GET install -y --no-install-recommends \
   nano \
   nodejs \
   r-cran-rjava \
+  texlive \
+  tk-table \
   xclip \
   xfonts-100dpi \
   xfonts-75dpi \
