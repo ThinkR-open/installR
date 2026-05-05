@@ -320,14 +320,21 @@ cli::cat_bullet(
 
 cli::cat_rule("R-Universe packages")
 
+# pak resolves R-Universe correctly when the repo is in `options(repos = …)`,
+# whereas `install.packages()` on R-Universe URLs intermittently downloads a
+# 0-byte body (server returns a redirect/HTML stub instead of the binary on
+# this R/OS combo).
 for (p in runiv_pkgs) {
   cli::cat_bullet(
     sprintf("Installing %s", p$name),
     bullet = "play"
   )
+  old_repos <- getOption("repos")
+  options(repos = c(p$repos, old_repos))
   res <- attempt::attempt({
-    install.packages(p$name, repos = p$repos)
+    pak::pkg_install(p$name, upgrade = FALSE, ask = FALSE)
   })
+  options(repos = old_repos)
   if (
     attempt::is_try_error(res) ||
       !(p$name %in% as.data.frame(installed.packages())$Package)
@@ -340,6 +347,10 @@ for (p in runiv_pkgs) {
 
 cli::cat_rule("GitHub packages (one by one for resilience)")
 
+# Use remotes::install_github rather than pak: pak runs in a subprocess that
+# does not always inherit GITHUB_PAT set via Sys.setenv() in the parent, which
+# triggers "Cannot query GitHub, are you offline?" failures even when the
+# token is present. remotes reads the env var directly in-process.
 gh_failed <- c()
 
 library(progress)
@@ -369,14 +380,16 @@ for (pkg in gh_pkgs) {
   )
 
   res <- attempt::attempt({
-    pak::pak(
+    remotes::install_github(
       pkg,
-      upgrade = FALSE,
-      ask = FALSE
+      upgrade = "never"
     )
   })
 
-  if (attempt::is_try_error(res)) {
+  if (
+    attempt::is_try_error(res) ||
+      !(pkg_name(pkg) %in% as.data.frame(installed.packages())$Package)
+  ) {
     cli::cat_bullet(
       sprintf("Failed: %s", pkg),
       bullet = "cross"
