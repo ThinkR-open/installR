@@ -65,6 +65,7 @@ cran_pkgs <- c(
   "cluster",
   "colorspace",
   "colourpicker",
+  "constructive",
   "covr",
   "cowplot",
   "cowsay",
