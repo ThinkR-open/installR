@@ -225,6 +225,7 @@ cran_pkgs <- c(
   "targets",
   "tcltk2",
   "terra",
+  "tfrmt",
   "thematic",
   "thinkr",
   "tidystringdist",
